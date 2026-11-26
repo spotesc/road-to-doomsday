@@ -1,4 +1,4 @@
-export const RELEASE = "2026-12-16T00:00:00";
+export const RELEASE = "2026-12-18";
 
 export const FINALE = { id: "avengers-doomsday", title: "Avengers: Doomsday", tmdb: "movie:1003596" };
 

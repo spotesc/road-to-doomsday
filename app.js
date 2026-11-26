@@ -4,6 +4,7 @@ const KEYS = {
   watched: "road-to-doomsday:watched",
   prefs: "road-to-doomsday:prefs",
   tmdb: "road-to-doomsday:tmdb",
+  release: "road-to-doomsday:release",
 };
 
 const IMG = "https://image.tmdb.org/t/p/";
@@ -47,7 +48,9 @@ const titles = SECTIONS.flatMap((s) => s.items.map((t) => ({ ...t, section: s })
 titles.forEach((t, i) => (t.number = i + 1));
 const byId = new Map(titles.map((t) => [t.id, t]));
 const TOTAL = titles.length;
-const releaseAt = new Date(RELEASE);
+
+let release = null;
+let releaseAt = null;
 
 let info = {};
 const watched = new Set(store.read(KEYS.watched, []).filter((id) => byId.has(id)));
@@ -221,7 +224,7 @@ function update() {
 
   const minsLeft = titles.filter((t) => !watched.has(t.id)).reduce((sum, t) => sum + minsOf(t), 0);
   const hoursLeft = minsLeft / 60;
-  const daysLeft = (releaseAt - Date.now()) / 86400000;
+  const daysLeft = releaseAt ? (releaseAt - Date.now()) / 86400000 : null;
   $("#rt").textContent = `${Math.round(hoursLeft)}h`;
   $("#pace").textContent = !minsLeft ? "Done" : daysLeft > 0 ? `${(hoursLeft / daysLeft).toFixed(1)}h a day` : "–";
 
@@ -229,10 +232,12 @@ function update() {
 
   const everything = watched.size === TOTAL;
   $("#finale").classList.toggle("ready", everything);
-  const days = Math.ceil(daysLeft);
+  const days = daysLeft === null ? null : Math.floor(daysLeft);
+  const when =
+    days === null ? "" : days > 1 ? `${days} days to go · ` : days === 1 ? "1 day to go · " : daysLeft > 0 ? "Out tomorrow · " : "Out now · ";
   $("#finale-status").textContent = everything
     ? `All ${TOTAL} watched. You're ready.`
-    : `${days > 0 ? `${days} days to go` : "Out now"} · ${watched.size} of ${TOTAL} watched`;
+    : `${when}${watched.size} of ${TOTAL} watched`;
 
   if (sheet.open) refreshSheetState();
 }
@@ -252,7 +257,7 @@ function renderNext(inView) {
       <div class="next-body">
         <p class="next-k">${whole ? "Road complete" : "All done here"}</p>
         <h2 class="next-title">${whole ? "You're ready for Doomsday" : "Nothing left in this filter"}</h2>
-        <p class="next-why">${whole ? "Every stop ticked. See you at the cinema on 16 December." : "Pick another filter to keep going."}</p>
+        <p class="next-why">${whole ? `Every stop ticked. See you at the cinema${release ? ` on ${dayMonth(release.date)}` : ""}.` : "Pick another filter to keep going."}</p>
       </div>`;
     return;
   }
@@ -491,9 +496,62 @@ window.addEventListener("storage", (e) => {
   update();
 });
 
+/* Release date, in the viewer's own country and time zone */
+
+const localMidnight = (date) => {
+  const [y, m, d] = date.split("-").map(Number);
+  return new Date(y, m - 1, d);
+};
+
+const dayMonth = (date) => localMidnight(date).toLocaleDateString(undefined, { day: "numeric", month: "long" });
+
+function regionName(country) {
+  try {
+    return new Intl.DisplayNames([navigator.language || "en"], { type: "region" }).of(country);
+  } catch {
+    return country;
+  }
+}
+
+function applyRelease(next) {
+  if (!next?.date || !/^\d{4}-\d{2}-\d{2}$/.test(next.date)) return;
+  release = next;
+  releaseAt = localMidnight(next.date);
+
+  const [y, m, d] = next.date.split("-");
+  const monthFirst = next.country ? next.country === "US" : navigator.language === "en-US";
+  $("#date-line").textContent = `${monthFirst ? `${m}.${d}` : `${d}.${m}`}.${y.slice(2)} is Doomsday`;
+
+  const long = releaseAt.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
+  $("#finale-date").textContent = `${next.country ? `${regionName(next.country)} · ` : ""}In cinemas ${long}`;
+
+  nextKey = "";
+  tickClock();
+  update();
+}
+
+async function loadRelease() {
+  const saved = store.read(KEYS.release, null);
+  if (saved) applyRelease(saved);
+  const fallback = setTimeout(() => !release && applyRelease({ date: RELEASE, country: null }), 3000);
+  try {
+    const query = new URLSearchParams(location.search).get("country");
+    const res = await fetch(`/api/release${query ? `?country=${encodeURIComponent(query)}` : ""}`);
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    clearTimeout(fallback);
+    applyRelease(data);
+    store.write(KEYS.release, { date: data.date, country: data.country });
+  } catch {
+    clearTimeout(fallback);
+    if (!release) applyRelease({ date: RELEASE, country: null });
+  }
+}
+
 /* Countdown */
 
 function tickClock() {
+  if (!releaseAt) return;
   let left = Math.max(0, Math.floor((releaseAt - Date.now()) / 1000));
   const d = Math.floor(left / 86400);
   left %= 86400;
@@ -550,4 +608,5 @@ update();
 tickClock();
 setInterval(tickClock, 1000);
 reveal();
+loadRelease();
 loadInfo();

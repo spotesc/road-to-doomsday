@@ -1,6 +1,6 @@
 # Road to Doomsday
 
-Every Marvel film and series in story order before *Avengers: Doomsday* (UK cinemas 16 December 2026), with tick boxes.
+Every Marvel film and series in story order before *Avengers: Doomsday*, with tick boxes. The countdown uses the release date for the viewer's own country (16 December in the UK, 18 December in the US) and their own time zone.
 
 Live at https://spotesc-doomsday.vercel.app
 

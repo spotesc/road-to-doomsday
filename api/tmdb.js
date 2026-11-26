@@ -1,24 +1,7 @@
 import { SECTIONS, FINALE } from "../data/titles.js";
+import { tmdb, hasKey } from "../lib/tmdb.js";
 
-const BASE = "https://api.themoviedb.org/3";
 const shows = new Map();
-
-function credentials() {
-  const key = (process.env.TMDB_API_KEY || "").trim();
-  if (!key) throw new Error("TMDB_API_KEY is missing");
-  return key.startsWith("ey") ? { header: `Bearer ${key}` } : { param: key };
-}
-
-async function tmdb(path, params = {}) {
-  const auth = credentials();
-  const query = new URLSearchParams({ language: "en-US", ...params });
-  if (auth.param) query.set("api_key", auth.param);
-  const headers = { accept: "application/json" };
-  if (auth.header) headers.authorization = auth.header;
-  const res = await fetch(`${BASE}${path}?${query}`, { headers });
-  if (!res.ok) throw new Error(`TMDB ${res.status} on ${path}`);
-  return res.json();
-}
 
 function trailerKey(videos) {
   const list = (videos?.results || []).filter((v) => v.site === "YouTube");
@@ -90,7 +73,7 @@ async function inBatches(list, size, fn) {
 
 export async function GET() {
   try {
-    credentials();
+    if (!hasKey()) throw new Error("TMDB_API_KEY is missing");
     const wanted = [...SECTIONS.flatMap((s) => s.items), FINALE].filter((t) => t.tmdb);
     const results = await inBatches(wanted, 10, async (t) => {
       try {
