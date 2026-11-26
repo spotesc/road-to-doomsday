@@ -27,7 +27,7 @@ export function Finale({ backdrop, release, status, ready }: Props) {
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        "letterbox relative isolate mt-24 overflow-hidden rounded-3xl border border-white/[0.07] px-6 pt-20 pb-16 text-center sm:mt-32 sm:pt-24 sm:pb-20",
+        "relative isolate mt-24 overflow-hidden rounded-3xl border border-white/[0.07] px-6 pt-20 pb-16 text-center sm:mt-32 sm:pt-24 sm:pb-20",
         ready && "border-mint/30 shadow-[0_0_90px_-10px_rgb(60_130_105/0.35)]"
       )}
     >

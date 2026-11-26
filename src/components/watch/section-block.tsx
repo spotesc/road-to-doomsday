@@ -36,7 +36,7 @@ export function SectionBlock({ section, index, matching, visible, watched, detai
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
-          "group letterbox relative isolate flex min-h-[260px] items-end overflow-hidden rounded-3xl border border-white/[0.07] sm:min-h-[340px]",
+          "group relative isolate flex min-h-[260px] items-end overflow-hidden rounded-3xl border border-white/[0.07] sm:min-h-[340px]",
           complete && "border-mint/25"
         )}
       >

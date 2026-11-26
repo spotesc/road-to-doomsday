@@ -35,7 +35,7 @@ export function UpNext({ next, total, details, wholeList, releaseDay, onTick, on
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-      className="group letterbox relative isolate mt-7 overflow-hidden rounded-3xl border border-white/[0.08] bg-obsidian shadow-[0_60px_120px_-50px_rgb(0_0_0/1)]"
+      className="group relative isolate mt-7 overflow-hidden rounded-3xl border border-white/[0.08] bg-obsidian shadow-[0_60px_120px_-50px_rgb(0_0_0/1)]"
     >
       <AnimatePresence mode="wait" initial={false}>
         {next ? (

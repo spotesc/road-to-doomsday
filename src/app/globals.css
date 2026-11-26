@@ -179,26 +179,6 @@
   }
 }
 
-.letterbox::before,
-.letterbox::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  z-index: 2;
-  height: 10px;
-  background: #000;
-  pointer-events: none;
-}
-
-.letterbox::before {
-  top: 0;
-}
-
-.letterbox::after {
-  bottom: 0;
-}
-
 .sheen {
   position: relative;
   overflow: hidden;

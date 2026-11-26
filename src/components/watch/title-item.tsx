@@ -171,9 +171,7 @@ export const TitleCard = forwardRef<HTMLLIElement, Props>(function TitleCard(
             done && "brightness-[0.3] grayscale"
           )}
         />
-        <span className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/80 to-transparent" />
-        <span className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
-        <span className="absolute top-3 left-3.5 font-mono text-[12px] leading-none tracking-[0.08em] text-silver [text-shadow:0_2px_10px_rgb(0_0_0/0.9)]">
+        <span className="absolute top-2.5 left-2.5 rounded-full border border-white/10 bg-black/55 px-2 py-1 font-mono text-[11px] leading-none tracking-[0.08em] text-silver backdrop-blur-sm">
           {pad(title.number)}
         </span>
         {done && (
