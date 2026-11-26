@@ -1,14 +1,46 @@
+export type Kind = "film" | "series" | "special" | "animated";
+export type Tier = "ess" | "rec" | "opt";
+
+export interface Title {
+  id: string;
+  title: string;
+  kind: Kind;
+  year: number;
+  mins: number;
+  eps?: number;
+  season?: number;
+  tier: Tier;
+  pick?: boolean;
+  tmdb: string | null;
+  why: string;
+}
+
+export interface Section {
+  id: string;
+  kicker: string;
+  title: string;
+  note: string;
+  cover: string;
+  items: Title[];
+}
+
+export interface StoryTitle extends Title {
+  number: number;
+  sectionId: string;
+  sectionTitle: string;
+}
+
 export const RELEASE = "2026-12-18";
 
-export const FINALE = { id: "avengers-doomsday", title: "Avengers: Doomsday", tmdb: "movie:1003596" };
+export const FINALE: { id: string; title: string; tmdb: string } = { id: "avengers-doomsday", title: "Avengers: Doomsday", tmdb: "movie:1003596" };
 
-export const TIERS = {
+export const TIERS: Record<Tier, string> = {
   ess: "Essential",
   rec: "Recommended",
   opt: "Optional",
 };
 
-export const SECTIONS = [
+export const SECTIONS: Section[] = [
   {
     id: "prologue",
     kicker: "Prologue",
@@ -115,3 +147,7 @@ export const SECTIONS = [
     ],
   },
 ];
+
+export const TITLES: StoryTitle[] = SECTIONS.flatMap((section) =>
+  section.items.map((item) => ({ ...item, number: 0, sectionId: section.id, sectionTitle: section.title }))
+).map((item, index) => ({ ...item, number: index + 1 }));
