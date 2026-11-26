@@ -71,8 +71,8 @@ export function SearchCommand({ open, onOpenChange, titles, details, watched, on
                       {t.season && <span className="text-muted-foreground"> S{t.season}</span>}
                       <span className="text-muted-foreground"> · {t.year}</span>
                     </span>
-                    {watched.has(t.id) && <CircleCheck className="text-jade" />}
-                    <span className="font-display text-xs text-gold tabular-nums">{pad(t.number)}</span>
+                    {watched.has(t.id) && <CircleCheck className="text-mint" />}
+                    <span className="font-mono text-[11px] text-silver tabular-nums">{pad(t.number)}</span>
                   </CommandItem>
                 ))}
             </CommandGroup>

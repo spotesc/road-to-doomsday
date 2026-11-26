@@ -3,10 +3,12 @@
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { FINALE, SECTIONS, TITLES } from "@/data/titles";
+import { useCinematicAudio } from "@/hooks/use-cinematic-audio";
 import { useRelease } from "@/hooks/use-release";
 import { useStored } from "@/hooks/use-stored";
 import { fullName, minsOf } from "@/lib/format";
 import type { DetailsMap } from "@/lib/tmdb";
+import { AudioDock } from "./audio-control";
 import { useNowMinutes } from "./countdown";
 import { FILTERS, filterTest, type FilterKey, type ViewKey } from "./filters";
 import { Finale } from "./finale";
@@ -36,6 +38,7 @@ export function Watchlist({ details }: { details: DetailsMap }) {
   const [searching, setSearching] = useState(false);
   const release = useRelease();
   const now = useNowMinutes();
+  const audio = useCinematicAudio(release?.at ?? null);
 
   const watched = useMemo(() => new Set(watchedList.filter((id) => byId.has(id))), [watchedList]);
 
@@ -121,7 +124,7 @@ export function Watchlist({ details }: { details: DetailsMap }) {
 
   return (
     <>
-      <Hero release={release} onShare={share} />
+      <Hero release={release} audio={audio} onShare={share} />
 
       <div className="relative z-10 mx-auto -mt-4 max-w-5xl px-4 sm:px-6">
         <ProgressPanel
@@ -189,6 +192,8 @@ export function Watchlist({ details }: { details: DetailsMap }) {
         onNavigate={setOpenId}
         onClose={() => setOpenId(null)}
       />
+
+      <AudioDock audio={audio} />
 
       <SearchCommand
         open={searching}

@@ -20,6 +20,7 @@ export interface Section {
   kicker: string;
   title: string;
   note: string;
+  tagline?: string;
   cover: string;
   items: Title[];
 }
@@ -92,6 +93,7 @@ export const SECTIONS: Section[] = [
     kicker: "Phase 4–6",
     title: "The Multiverse Saga",
     note: "Where the incursions, the TVA and the New Avengers all come from. From here, series matter as much as films.",
+    tagline: "The multiverse is collapsing.",
     cover: "doctor-strange-multiverse-of-madness",
     items: [
       { id: "loki-1", title: "Loki", season: 1, kind: "series", year: 2021, eps: 6, mins: 300, tier: "ess", pick: true, tmdb: "tv:84958:1", why: "The TVA, variants and branching timelines. The most load-bearing show." },

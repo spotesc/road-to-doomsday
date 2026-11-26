@@ -33,7 +33,7 @@ export function TitleDetails({ title, titles, details, watched, onToggle, onNavi
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent
-          className="max-h-[calc(100dvh-3rem)] gap-0 overflow-y-auto rounded-3xl border-white/10 bg-popover p-0 shadow-[0_60px_120px_-30px_rgb(0_0_0/0.95)] sm:max-w-[800px]"
+          className="max-h-[calc(100dvh-3rem)] gap-0 overflow-y-auto rounded-3xl border-white/10 bg-popover p-0 shadow-[0_80px_160px_-40px_rgb(0_0_0/1),0_0_0_1px_rgb(184_184_184/0.06)] sm:max-w-[800px]"
           onKeyDown={(e) => {
             if (!title) return;
             const i = titles.indexOf(title);
@@ -104,22 +104,22 @@ function Body({
   return (
     <>
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-secondary sm:aspect-[16/7.5]">
-        <BackdropImage path={d?.backdrop} sizes="(max-width: 640px) 100vw, 800px" className="object-[center_25%]" priority />
+        <BackdropImage path={d?.backdrop} sizes="(max-width: 640px) 100vw, 800px" className="object-[center_25%] saturate-[0.8]" priority />
         <div className="sheet-veil absolute inset-0" />
       </div>
 
       <div className="relative -mt-16 grid grid-cols-[96px_minmax(0,1fr)] gap-x-4 px-5 sm:-mt-28 sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-x-7 sm:px-9">
-        <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-secondary shadow-[0_30px_60px_-15px_rgb(0_0_0/0.9)] ring-1 ring-white/12">
+        <div className="relative aspect-[2/3] overflow-hidden rounded-lg bg-charcoal shadow-[0_40px_70px_-20px_rgb(0_0_0/0.95)] ring-1 ring-silver/15">
           <PosterImage path={d?.poster} sizes="150px" priority />
         </div>
         <div className="self-end pt-6 sm:pt-12">
-          <p className="eyebrow text-[9.5px] text-jade">
+          <p className="eyebrow text-[9px] text-silver">
             No. {pad(title.number)} / {titles.length}
-            <span className="ml-2.5 text-faint">{title.sectionTitle}</span>
+            <span className="ml-2.5 text-steel">— {title.sectionTitle}</span>
           </p>
-          <Title className="mt-3 font-display text-[26px] leading-[1.02] font-semibold tracking-[0.02em] sm:text-[42px]">
+          <Title className="poster-type mt-3 text-[38px] leading-[0.9] sm:text-[64px]">
             <span className="text-metal">{nameOf(title, d)}</span>
-            {title.season && <span className="ml-2.5 text-[0.55em] text-muted-foreground">Season {title.season}</span>}
+            {title.season && <span className="ml-2.5 text-[0.45em] tracking-[0.12em] text-steel">Season {title.season}</span>}
           </Title>
           <Description className="mt-2 text-sm text-muted-foreground italic">{d?.tagline || `${KINDS[title.kind]}, ${title.year}`}</Description>
         </div>
@@ -134,25 +134,25 @@ function Body({
           {length && <PlainBadge>{length}</PlainBadge>}
           {d?.rating && (
             <PlainBadge>
-              <Star className="size-2.5 fill-gold text-gold" />
+              <Star className="size-2.5 fill-silver text-silver" />
               {d.rating.toFixed(1)}
             </PlainBadge>
           )}
           {d?.genres.slice(0, 2).map((g) => <PlainBadge key={g}>{g}</PlainBadge>)}
         </div>
 
-        <div className="mt-5 rounded-r-xl border-l-2 border-gold/70 bg-gold/[0.06] py-3 pr-4 pl-4">
-          <p className="eyebrow text-[9px] text-gold">Why watch it</p>
+        <div className="mt-5 rounded-r-xl border-l-2 border-silver/60 bg-white/[0.03] py-3.5 pr-4 pl-4">
+          <p className="eyebrow text-[8.5px] text-steel">Why watch it</p>
           <p className="mt-1.5 text-[15px] leading-relaxed text-foreground">{title.why}</p>
         </div>
 
-        {d?.overview && <p className="mt-5 text-[14.5px] leading-relaxed text-[#c3cbc7]">{d.overview}</p>}
+        {d?.overview && <p className="mt-5 text-[14.5px] leading-relaxed text-[#bdbdbd]">{d.overview}</p>}
 
         <div className="mt-6 flex flex-wrap gap-2.5">
           <Button
             onClick={() => onToggle(title.id)}
             variant="outline"
-            className={cn(done ? `${ghostButton} border-jade/35 text-jade hover:text-jade` : primaryButton)}
+            className={cn(done ? `${ghostButton} border-mint/35 text-mint hover:text-mint` : primaryButton)}
           >
             <Check className="stroke-3" />
             {done ? "Watched · undo" : "Mark as watched"}
@@ -188,7 +188,7 @@ function Body({
               index === 1 ? "text-right" : "text-left"
             )}
           >
-            <span className={cn("eyebrow flex items-center gap-1.5 text-[8.5px] text-faint", index === 1 && "justify-end")}>
+            <span className={cn("eyebrow flex items-center gap-1.5 text-[8px] text-steel", index === 1 && "justify-end")}>
               {index === 0 && <ArrowLeft className="size-3" />}
               {index === 0 ? "Before this" : "After this"}
               {index === 1 && <ArrowRight className="size-3" />}

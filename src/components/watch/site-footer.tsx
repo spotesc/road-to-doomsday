@@ -17,11 +17,11 @@ export function SiteFooter({ canReset, onReset }: { canReset: boolean; onReset: 
   return (
     <footer className="mt-16 pb-[calc(4rem+env(safe-area-inset-bottom))] text-center">
       <div className="hairline mx-auto w-full" />
-      <p className="eyebrow mt-10 text-[9px] text-faint">A</p>
-      <p className="mt-2 font-display text-xl tracking-[0.18em]">
+      <p className="eyebrow mt-12 text-[8.5px] text-steel">A</p>
+      <p className="mt-2.5 font-display text-xl tracking-[0.2em]">
         <span className="text-metal">SPOTESC</span>
       </p>
-      <p className="eyebrow mt-2 text-[9px] text-faint">Production · @spotesc</p>
+      <p className="eyebrow mt-2.5 text-[8.5px] text-steel">Production · @spotesc</p>
 
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-[12px] text-muted-foreground">
         <span>Your ticks are saved on this device</span>
@@ -31,21 +31,21 @@ export function SiteFooter({ canReset, onReset }: { canReset: boolean; onReset: 
               variant="outline"
               size="sm"
               disabled={!canReset}
-              className="h-8 rounded-full border-white/12 bg-transparent px-3.5 text-[11.5px] text-muted-foreground hover:border-white/25 hover:text-foreground"
+              className="h-8 rounded-full border-silver/20 bg-transparent px-4 font-mono text-[10px] tracking-[0.18em] text-silver uppercase hover:border-silver/45 hover:text-soft"
             >
               Reset list
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent className="rounded-2xl border-white/10 bg-popover">
             <AlertDialogHeader>
-              <AlertDialogTitle className="font-display tracking-[0.02em]">Clear all your ticks?</AlertDialogTitle>
+              <AlertDialogTitle className="poster-type text-2xl">Clear all your ticks?</AlertDialogTitle>
               <AlertDialogDescription>
                 This only clears this device. Anyone you shared the list with keeps their own ticks.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel className="rounded-full">Keep them</AlertDialogCancel>
-              <AlertDialogAction onClick={onReset} className="rounded-full bg-destructive text-white hover:bg-destructive/85">
+              <AlertDialogAction onClick={onReset} className="rounded-full bg-crimson text-soft hover:bg-crimson/85">
                 Clear ticks
               </AlertDialogAction>
             </AlertDialogFooter>

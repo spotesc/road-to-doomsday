@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Cinzel, Inter } from "next/font/google";
+import { Bebas_Neue, Cinzel, IBM_Plex_Mono, Inter } from "next/font/google";
+import { Atmosphere } from "@/components/watch/atmosphere";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
@@ -10,6 +11,18 @@ const cinzel = Cinzel({
   variable: "--font-cinzel",
   subsets: ["latin"],
   weight: ["500", "600", "700"],
+});
+
+const bebas = Bebas_Neue({
+  variable: "--font-bebas",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
 });
 
 const description = "Every Marvel film and series in story order before Avengers: Doomsday, with tick boxes. From Spotesc.";
@@ -29,17 +42,18 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#050706",
+  themeColor: "#070707",
   colorScheme: "dark",
   viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-GB" className={`dark ${inter.variable} ${cinzel.variable}`}>
+    <html lang="en-GB" className={`dark ${inter.variable} ${cinzel.variable} ${bebas.variable} ${plexMono.variable}`}>
       <body className="min-h-dvh">
+        <Atmosphere />
         <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
-        <Toaster position="bottom-center" />
+        <Toaster position="bottom-center" mobileOffset={{ bottom: "80px" }} />
         <div className="grain" aria-hidden />
       </body>
     </html>
