@@ -1,11 +1,12 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Check, Info, Play } from "lucide-react";
+import { Check, Info, Play, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { StoryTitle } from "@/data/titles";
-import { nameOf, pad } from "@/lib/format";
+import { KINDS, lengthText, nameOf, pad } from "@/lib/format";
 import type { DetailsMap } from "@/lib/tmdb";
+import { TierBadge } from "./badges";
 import { BackdropImage, PosterImage } from "./tmdb-image";
 
 interface Props {
@@ -18,60 +19,99 @@ interface Props {
   onOpen: (id: string) => void;
 }
 
+export const primaryButton =
+  "h-11 rounded-full border-0 bg-gradient-to-b from-[#6ff0a8] to-[#1fb062] px-6 font-semibold text-primary-foreground shadow-[0_12px_30px_-10px_rgb(61_220_132/0.7),inset_0_1px_0_rgb(255_255_255/0.4)] hover:brightness-110";
+
+export const ghostButton =
+  "h-11 rounded-full border-white/12 bg-white/[0.05] px-5 font-medium backdrop-blur-md hover:border-white/25 hover:bg-white/10";
+
 export function UpNext({ next, total, details, wholeList, releaseDay, onTick, onOpen }: Props) {
   const d = next ? details[next.id] : undefined;
 
   return (
     <section
       aria-live="polite"
-      className="relative mt-3.5 overflow-hidden rounded-2xl border border-doom/30 bg-[#080c0a] shadow-[0_0_40px_rgb(63_224_106/0.06)]"
+      className="letterbox relative isolate mt-6 overflow-hidden rounded-3xl border border-white/[0.07] bg-card shadow-[0_50px_100px_-50px_rgb(0_0_0/0.95)]"
     >
       <AnimatePresence mode="wait" initial={false}>
         {next ? (
           <motion.div
             key={next.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, scale: 1.01 }}
+            animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="relative grid grid-cols-[92px_minmax(0,1fr)] gap-4 p-4 sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-6 sm:p-6"
+            transition={{ duration: 0.45, ease: [0.2, 0.8, 0.2, 1] }}
+            className="relative grid grid-cols-[96px_minmax(0,1fr)] items-end gap-x-5 gap-y-5 px-5 pt-14 pb-7 sm:min-h-[440px] sm:grid-cols-[190px_minmax(0,1fr)] sm:gap-x-9 sm:px-10 sm:pt-24 sm:pb-11"
           >
-            <div className="absolute inset-0 opacity-55">
-              <BackdropImage path={d?.backdrop} sizes="(max-width: 640px) 100vw, 880px" />
+            <div className="absolute inset-0 -z-10">
+              <BackdropImage path={d?.backdrop} sizes="(max-width: 1024px) 100vw, 1024px" className="object-[center_25%]" />
             </div>
-            <div className="side-veil absolute inset-0" />
+            <div className="feature-veil absolute inset-0 -z-10" />
 
             <button
               type="button"
               onClick={() => onOpen(next.id)}
               aria-label={`${nameOf(next, d)}: details`}
-              className="relative aspect-[2/3] self-start overflow-hidden rounded-[10px] bg-gradient-to-br from-[#1d2521] to-[#0b0f0d] shadow-[0_14px_30px_rgb(0_0_0/0.6),0_0_0_1px_rgb(255_255_255/0.08)]"
+              className="sheen relative aspect-[2/3] self-end overflow-hidden rounded-xl bg-secondary shadow-[0_30px_60px_-15px_rgb(0_0_0/0.85)] ring-1 ring-white/12 sm:row-span-3"
             >
-              <PosterImage path={d?.poster} sizes="150px" />
+              <PosterImage path={d?.poster} sizes="190px" />
             </button>
 
-            <div className="relative flex min-w-0 flex-col">
-              <p className="text-[10.5px] font-bold tracking-[0.28em] text-doom uppercase text-glow">
+            <div className="min-w-0 self-end">
+              <p className="eyebrow text-[9.5px] text-jade">
                 Up next
-                <span className="ml-2 text-muted-foreground [text-shadow:none]">
-                  No. {pad(next.number)} of {total}
+                <span className="mt-1.5 block text-faint sm:mt-0 sm:ml-3 sm:inline">
+                  No. {pad(next.number)} / {total}
                 </span>
               </p>
-              <h2 className="mt-2 font-display text-[clamp(26px,5vw,38px)] leading-none font-bold tracking-[0.01em] uppercase">
-                {nameOf(next, d)}
-                {next.season && <span className="ml-2 text-muted-foreground">S{next.season}</span>}
+              <h2 className="mt-3 font-display text-[clamp(26px,5.2vw,54px)] leading-[1.02] font-semibold tracking-[0.02em]">
+                <span className="text-metal">{nameOf(next, d)}</span>
+                {next.season && <span className="ml-3 text-[0.55em] text-muted-foreground">Season {next.season}</span>}
               </h2>
-              <p className="mt-2 text-[13.5px] text-[#c4ccc7] sm:text-[14.5px]">{next.why}</p>
-              {d?.overview && (
-                <p className="mt-2 line-clamp-2 hidden text-[13px] text-muted-foreground sm:block">{d.overview}</p>
-              )}
-              <div className="mt-auto hidden flex-wrap gap-2 pt-4 sm:flex">
-                <Actions next={next} trailer={d?.trailer} onTick={onTick} onOpen={onOpen} />
-              </div>
+              <p className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[12.5px] text-muted-foreground">
+                <span>{next.year}</span>
+                <span className="text-faint">•</span>
+                <span>{KINDS[next.kind]}</span>
+                {lengthText(next, d) && (
+                  <>
+                    <span className="text-faint">•</span>
+                    <span>{lengthText(next, d)}</span>
+                  </>
+                )}
+                {d?.rating && (
+                  <>
+                    <span className="text-faint">•</span>
+                    <span className="inline-flex items-center gap-1 text-gold-bright">
+                      <Star className="size-3 fill-current" />
+                      {d.rating.toFixed(1)}
+                    </span>
+                  </>
+                )}
+                <TierBadge title={next} className="ml-1" />
+              </p>
             </div>
 
-            <div className="relative col-span-2 flex flex-wrap gap-2 sm:hidden">
-              <Actions next={next} trailer={d?.trailer} onTick={onTick} onOpen={onOpen} />
+            <p className="col-span-2 max-w-xl text-[15px] leading-relaxed text-[#d4dad7] sm:col-span-1 sm:col-start-2 sm:text-[16px]">
+              {next.why}
+            </p>
+
+            <div className="col-span-2 flex flex-wrap gap-2.5 sm:col-span-1 sm:col-start-2">
+              <Button onClick={() => onTick(next.id)} className={`${primaryButton} basis-full sm:basis-auto`}>
+                <Check className="stroke-3" />
+                Mark as watched
+              </Button>
+              {d?.trailer && (
+                <Button asChild variant="outline" className={`${ghostButton} flex-1 sm:flex-none`}>
+                  <a href={`https://www.youtube.com/watch?v=${d.trailer}`} target="_blank" rel="noopener noreferrer">
+                    <Play className="fill-current" />
+                    Trailer
+                  </a>
+                </Button>
+              )}
+              <Button variant="outline" onClick={() => onOpen(next.id)} className={`${ghostButton} flex-1 sm:flex-none`}>
+                <Info />
+                Details
+              </Button>
             </div>
           </motion.div>
         ) : (
@@ -80,15 +120,14 @@ export function UpNext({ next, total, details, wholeList, releaseDay, onTick, on
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="px-5 py-8 text-center"
+            className="px-6 py-20 text-center"
           >
-            <p className="text-[10.5px] font-bold tracking-[0.28em] text-doom uppercase text-glow">
-              {wholeList ? "Road complete" : "All done here"}
-            </p>
-            <h2 className="mt-2 font-display text-3xl font-bold uppercase">
-              {wholeList ? "You're ready for Doomsday" : "Nothing left in this filter"}
+            <p className="eyebrow text-[10px] text-jade">{wholeList ? "Road complete" : "All done here"}</p>
+            <h2 className="mt-4 font-display text-[clamp(28px,5vw,46px)] font-semibold">
+              <span className="text-metal">{wholeList ? "You're ready for Doomsday" : "Nothing left in this filter"}</span>
             </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <div className="hairline-gold mx-auto mt-5 w-36" />
+            <p className="mt-5 text-sm text-muted-foreground">
               {wholeList
                 ? `Every stop ticked. See you at the cinema${releaseDay ? ` on ${releaseDay}` : ""}.`
                 : "Pick another filter to keep going."}
@@ -97,45 +136,5 @@ export function UpNext({ next, total, details, wholeList, releaseDay, onTick, on
         )}
       </AnimatePresence>
     </section>
-  );
-}
-
-function Actions({
-  next,
-  trailer,
-  onTick,
-  onOpen,
-}: {
-  next: StoryTitle;
-  trailer?: string | null;
-  onTick: (id: string) => void;
-  onOpen: (id: string) => void;
-}) {
-  return (
-    <>
-      <Button
-        onClick={() => onTick(next.id)}
-        className="h-10 basis-full rounded-full px-4 shadow-glow sm:basis-auto"
-      >
-        <Check className="stroke-3" />
-        Mark watched
-      </Button>
-      {trailer && (
-        <Button asChild variant="outline" className="h-10 flex-1 rounded-full bg-card/70 px-4 sm:flex-none">
-          <a href={`https://www.youtube.com/watch?v=${trailer}`} target="_blank" rel="noopener noreferrer">
-            <Play className="fill-current" />
-            Trailer
-          </a>
-        </Button>
-      )}
-      <Button
-        variant="outline"
-        onClick={() => onOpen(next.id)}
-        className="h-10 flex-1 rounded-full bg-card/70 px-4 sm:flex-none"
-      >
-        <Info />
-        Details
-      </Button>
-    </>
   );
 }

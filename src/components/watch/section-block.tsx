@@ -8,8 +8,11 @@ import type { ViewKey } from "./filters";
 import { TitleCard, TitleRow } from "./title-item";
 import { BackdropImage } from "./tmdb-image";
 
+const NUMERALS = ["I", "II", "III", "IV", "V", "VI"];
+
 interface Props {
   section: Section;
+  index: number;
   matching: StoryTitle[];
   visible: StoryTitle[];
   watched: Set<string>;
@@ -19,45 +22,59 @@ interface Props {
   onOpen: (id: string) => void;
 }
 
-export function SectionBlock({ section, matching, visible, watched, details, view, onToggle, onOpen }: Props) {
+export function SectionBlock({ section, index, matching, visible, watched, details, view, onToggle, onOpen }: Props) {
   const seen = matching.filter((t) => watched.has(t.id)).length;
   const complete = matching.length > 0 && seen === matching.length;
   const Item = view === "grid" ? TitleCard : TitleRow;
 
   return (
-    <section id={section.id} aria-labelledby={`${section.id}-title`} className="mt-9">
-      <header className="relative isolate overflow-hidden rounded-2xl px-4 pt-12 pb-3.5">
-        <div className="absolute inset-0 -z-10 opacity-40">
-          <BackdropImage path={details[section.cover]?.backdrop} sizes="(max-width: 896px) 100vw, 896px" />
+    <section id={section.id} aria-labelledby={`${section.id}-title`} className="mt-14 sm:mt-20">
+      <header
+        className={cn(
+          "letterbox relative isolate flex min-h-[230px] items-end overflow-hidden rounded-3xl border border-white/[0.06] sm:min-h-[300px]",
+          complete && "border-jade/30"
+        )}
+      >
+        <div className="absolute inset-0 -z-10 opacity-70">
+          <BackdropImage path={details[section.cover]?.backdrop} sizes="(max-width: 1024px) 100vw, 1024px" className="object-[center_30%]" />
         </div>
-        <div className="banner-veil absolute inset-0 -z-10" />
-        <p className="text-[10.5px] font-bold tracking-[0.3em] text-doom uppercase text-glow">{section.kicker}</p>
-        <div className="mt-1.5 flex items-center gap-3">
+        <div className="chapter-veil absolute inset-0 -z-10" />
+        <span
+          aria-hidden
+          className="pointer-events-none absolute top-5 right-5 font-display text-[96px] leading-none font-bold text-transparent [-webkit-text-stroke:1px_rgb(255_255_255/0.16)] sm:top-6 sm:right-8 sm:text-[170px]"
+        >
+          {NUMERALS[index] ?? index + 1}
+        </span>
+
+        <div className="relative w-full p-5 pb-7 sm:p-9 sm:pb-10">
+          <p className="eyebrow text-[9.5px] text-jade">{section.kicker}</p>
           <h2
             id={`${section.id}-title`}
-            className="font-display text-[clamp(22px,4vw,30px)] font-bold tracking-[0.08em] whitespace-nowrap uppercase"
+            className="mt-3 font-display text-[clamp(30px,5.6vw,58px)] leading-none font-semibold tracking-[0.03em]"
           >
-            {section.title}
+            <span className="text-metal">{section.title}</span>
           </h2>
-          <span className="h-px flex-1 bg-gradient-to-r from-input to-transparent" />
-          <span className="text-xs whitespace-nowrap text-muted-foreground tabular-nums">
-            <b className={cn("font-semibold text-foreground", complete && "text-doom")}>{seen}</b>/{matching.length}
-          </span>
+          <p className="mt-3.5 max-w-xl text-[13.5px] leading-relaxed text-muted-foreground sm:text-sm">{section.note}</p>
+          <div className="mt-5 flex items-center gap-3">
+            <span className={cn("eyebrow text-[9px] tracking-[0.24em]", complete ? "text-jade" : "text-gold")}>
+              {complete ? "Chapter complete" : `${seen} of ${matching.length} watched`}
+            </span>
+            <span className="hairline-gold w-24 sm:w-40" />
+          </div>
         </div>
-        <p className="mt-1.5 max-w-[60ch] text-[13px] text-muted-foreground">{section.note}</p>
       </header>
 
       {visible.length === 0 ? (
-        <p className="mt-1 rounded-[13px] border border-dashed px-4 py-3.5 text-center text-[13px] text-faint">
-          All watched in this part.
+        <p className="mt-3 rounded-2xl border border-dashed border-white/10 px-4 py-5 text-center text-[13px] text-faint">
+          Every title in this chapter is watched.
         </p>
       ) : (
         <ul
           className={cn(
-            "mt-1.5",
+            "mt-4",
             view === "grid"
-              ? "grid grid-cols-3 gap-x-2.5 gap-y-4 sm:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] sm:gap-x-3.5 sm:gap-y-6"
-              : "flex flex-col gap-2"
+              ? "grid grid-cols-2 gap-x-3.5 gap-y-7 min-[480px]:grid-cols-3 sm:grid-cols-[repeat(auto-fill,minmax(168px,1fr))] sm:gap-x-5 sm:gap-y-9"
+              : "flex flex-col gap-2.5"
           )}
         >
           <AnimatePresence initial={false} mode="popLayout">

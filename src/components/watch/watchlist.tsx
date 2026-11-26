@@ -54,7 +54,7 @@ export function Watchlist({ details }: { details: DetailsMap }) {
   const minsLeft = TITLES.filter((t) => !watched.has(t.id)).reduce((sum, t) => sum + minsOf(t, details[t.id]), 0);
   const hoursLeft = minsLeft / 60;
   const daysLeft = release && now !== null ? (release.at.getTime() - now) / 86_400_000 : null;
-  const pace = !minsLeft ? "Done" : daysLeft !== null && daysLeft > 0 ? `${(hoursLeft / daysLeft).toFixed(1)}h a day` : "–";
+  const pace = !minsLeft ? "Done" : daysLeft !== null && daysLeft > 0 ? `${(hoursLeft / daysLeft).toFixed(1)}h/day` : "–";
   const essentialsLeft = TITLES.filter((t) => t.tier === "ess" && !watched.has(t.id)).length;
 
   const everything = watched.size === TITLES.length;
@@ -123,7 +123,7 @@ export function Watchlist({ details }: { details: DetailsMap }) {
     <>
       <Hero release={release} onShare={share} />
 
-      <div className="relative z-10 mx-auto max-w-4xl px-4">
+      <div className="relative z-10 mx-auto -mt-4 max-w-5xl px-4 sm:px-6">
         <ProgressPanel
           titles={TITLES}
           watched={watched}
@@ -155,8 +155,8 @@ export function Watchlist({ details }: { details: DetailsMap }) {
         onSearch={() => setSearching(true)}
       />
 
-      <main className="mx-auto max-w-4xl px-4">
-        {SECTIONS.map((section) => {
+      <main className="mx-auto max-w-5xl px-4 sm:px-6">
+        {SECTIONS.map((section, index) => {
           const matching = TITLES.filter((t) => t.sectionId === section.id && test(t));
           if (!matching.length) return null;
           const visible = prefs.hide ? matching.filter((t) => !watched.has(t.id)) : matching;
@@ -164,6 +164,7 @@ export function Watchlist({ details }: { details: DetailsMap }) {
             <SectionBlock
               key={section.id}
               section={section}
+              index={index}
               matching={matching}
               visible={visible}
               watched={watched}

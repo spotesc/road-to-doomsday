@@ -43,9 +43,9 @@ export function SearchCommand({ open, onOpenChange, titles, details, watched, on
       onOpenChange={onOpenChange}
       title="Search the list"
       description="Find a film or series by name"
-      className="border-input bg-card sm:max-w-lg"
+      className="rounded-2xl! border-white/10 bg-popover shadow-[0_40px_100px_-20px_rgb(0_0_0/0.95)] sm:max-w-lg"
     >
-      <Command className="bg-card">
+      <Command className="bg-popover">
         <CommandInput placeholder={`Search ${titles.length} titles…`} />
         <CommandList className="max-h-[min(60dvh,420px)]">
           <CommandEmpty>Nothing matches that.</CommandEmpty>
@@ -71,8 +71,8 @@ export function SearchCommand({ open, onOpenChange, titles, details, watched, on
                       {t.season && <span className="text-muted-foreground"> S{t.season}</span>}
                       <span className="text-muted-foreground"> · {t.year}</span>
                     </span>
-                    {watched.has(t.id) && <CircleCheck className="text-doom" />}
-                    <span className="font-display text-xs text-faint tabular-nums">{pad(t.number)}</span>
+                    {watched.has(t.id) && <CircleCheck className="text-jade" />}
+                    <span className="font-display text-xs text-gold tabular-nums">{pad(t.number)}</span>
                   </CommandItem>
                 ))}
             </CommandGroup>

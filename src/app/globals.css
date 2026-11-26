@@ -8,8 +8,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
-  --font-heading: var(--font-barlow);
-  --font-display: var(--font-barlow);
+  --font-heading: var(--font-cinzel);
+  --font-display: var(--font-cinzel);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -26,12 +26,14 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --color-doom: var(--doom);
-  --color-doom-dim: var(--doom-dim);
-  --color-marvel: var(--marvel);
+  --color-jade: var(--jade);
+  --color-emerald: var(--emerald);
+  --color-hood: var(--hood);
   --color-gold: var(--gold);
-  --color-sky: var(--sky);
+  --color-gold-bright: var(--gold-bright);
+  --color-steel: var(--steel);
   --color-faint: var(--faint);
+  --color-marvel: var(--marvel);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -39,38 +41,39 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-  --animate-breathe: breathe 26s ease-in-out infinite alternate;
-  --animate-glow: glow 4.5s ease-in-out infinite;
+  --animate-breathe: breathe 28s ease-in-out infinite alternate;
   --animate-ping-once: ping-once 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 :root {
   color-scheme: dark;
-  --background: #050607;
-  --foreground: #eef2ef;
-  --card: #0e1210;
-  --card-foreground: #eef2ef;
-  --popover: #0e1210;
-  --popover-foreground: #eef2ef;
-  --primary: #3fe06a;
-  --primary-foreground: #04140a;
-  --secondary: #141a17;
-  --secondary-foreground: #eef2ef;
-  --muted: #141a17;
-  --muted-foreground: #8a948e;
-  --accent: #1a221e;
-  --accent-foreground: #eef2ef;
-  --destructive: #ec1d24;
-  --border: #1f2724;
-  --input: #2e3833;
-  --ring: #3fe06a;
+  --background: #050706;
+  --foreground: #eef1ef;
+  --card: #0a0e0c;
+  --card-foreground: #eef1ef;
+  --popover: #0c100e;
+  --popover-foreground: #eef1ef;
+  --primary: #3ddc84;
+  --primary-foreground: #03140a;
+  --secondary: #111614;
+  --secondary-foreground: #eef1ef;
+  --muted: #111614;
+  --muted-foreground: #8f9894;
+  --accent: #161d1a;
+  --accent-foreground: #eef1ef;
+  --destructive: #e5484d;
+  --border: rgb(226 232 229 / 0.08);
+  --input: rgb(226 232 229 / 0.14);
+  --ring: #3ddc84;
   --radius: 0.875rem;
-  --doom: #3fe06a;
-  --doom-dim: #1b6b38;
+  --jade: #3ddc84;
+  --emerald: #1e9e5a;
+  --hood: #0d2a1b;
+  --gold: #d6b26e;
+  --gold-bright: #f3dca6;
+  --steel: #c7cfcb;
+  --faint: #5d6662;
   --marvel: #ec1d24;
-  --gold: #f0b429;
-  --sky: #4a9eff;
-  --faint: #5a645e;
 }
 
 @layer base {
@@ -85,19 +88,53 @@
   body {
     @apply bg-background text-foreground antialiased;
     overflow-x: hidden;
+    font-feature-settings: "ss01", "cv11";
   }
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+  ::selection {
+    background: rgb(61 220 132 / 0.3);
+  }
 }
 
 @layer utilities {
-  .text-glow {
-    text-shadow: 0 0 34px rgb(63 224 106 / 0.5), 0 0 70px rgb(63 224 106 / 0.25);
+  .text-metal {
+    background: linear-gradient(180deg, #ffffff 0%, #dfe5e2 34%, #8f9995 60%, #e9eeeb 82%, #b9c2be 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
-  .shadow-glow {
-    box-shadow: 0 0 18px rgb(63 224 106 / 0.35);
+  .text-gilt {
+    background: linear-gradient(180deg, #f8e7bd 0%, #d6b26e 55%, #9a783c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .eyebrow {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+  }
+  .glow-jade {
+    filter: drop-shadow(0 0 28px rgb(61 220 132 / 0.28));
+  }
+  .glass {
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.015));
+    border: 1px solid rgb(255 255 255 / 0.07);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 40px 80px -40px rgb(0 0 0 / 0.9);
+    backdrop-filter: blur(18px) saturate(1.2);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  }
+  .hairline-gold {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(214 178 110 / 0.7), transparent);
+  }
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.12), transparent);
   }
   .no-scrollbar {
     scrollbar-width: none;
@@ -105,32 +142,78 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+  .fade-left {
+    mask-image: linear-gradient(to left, #000 0%, rgb(0 0 0 / 0.6) 45%, transparent 100%);
+  }
+}
+
+.letterbox::before,
+.letterbox::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: 10px;
+  background: #000;
+  pointer-events: none;
+}
+
+.letterbox::before {
+  top: 0;
+}
+
+.letterbox::after {
+  bottom: 0;
+}
+
+.sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(115deg, transparent 30%, rgb(255 255 255 / 0.16) 48%, transparent 66%);
+  transform: translateX(-120%);
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.sheen:hover::after {
+  transform: translateX(120%);
 }
 
 .hero-veil {
   background:
-    linear-gradient(180deg, rgb(5 6 7 / 0.6) 0%, rgb(5 6 7 / 0) 22%, rgb(5 6 7 / 0.25) 55%, rgb(5 6 7 / 0.92) 84%, var(--background) 100%),
-    radial-gradient(70% 50% at 50% 100%, rgb(63 224 106 / 0.16), transparent 70%);
+    linear-gradient(180deg, rgb(5 7 6 / 0.75) 0%, rgb(5 7 6 / 0) 18%, rgb(5 7 6 / 0) 30%, rgb(5 7 6 / 0.6) 50%, rgb(5 7 6 / 0.88) 72%, var(--background) 100%),
+    radial-gradient(120% 80% at 50% 40%, transparent 50%, rgb(0 0 0 / 0.55) 100%),
+    radial-gradient(60% 40% at 50% 100%, rgb(61 220 132 / 0.14), transparent 70%);
 }
 
-.side-veil {
+.feature-veil {
   background:
-    linear-gradient(90deg, rgb(8 12 10 / 0.97) 0%, rgb(8 12 10 / 0.85) 50%, rgb(8 12 10 / 0.5) 100%),
-    linear-gradient(0deg, rgb(8 12 10 / 0.9) 0%, rgb(8 12 10 / 0) 70%);
+    linear-gradient(90deg, rgb(5 7 6 / 0.97) 0%, rgb(5 7 6 / 0.88) 45%, rgb(5 7 6 / 0.35) 78%, rgb(5 7 6 / 0.12) 100%),
+    linear-gradient(0deg, rgb(5 7 6 / 0.95) 0%, rgb(5 7 6 / 0) 55%);
 }
 
-.banner-veil {
-  background: linear-gradient(180deg, rgb(5 6 7 / 0.2) 0%, rgb(5 6 7 / 0.75) 55%, var(--background) 100%);
+.chapter-veil {
+  background:
+    linear-gradient(90deg, rgb(5 7 6 / 0.95) 0%, rgb(5 7 6 / 0.7) 45%, rgb(5 7 6 / 0.15) 100%),
+    linear-gradient(0deg, var(--background) 0%, rgb(5 7 6 / 0) 60%);
 }
 
 .sheet-veil {
-  background: linear-gradient(0deg, var(--card) 0%, rgb(14 18 16 / 0.35) 55%, rgb(14 18 16 / 0.1) 100%);
+  background: linear-gradient(0deg, var(--popover) 0%, rgb(12 16 14 / 0.4) 55%, rgb(12 16 14 / 0.05) 100%);
 }
 
 .finale-veil {
   background:
-    radial-gradient(ellipse 55% 65% at 50% 35%, rgb(52 150 88 / 0.22), transparent 70%),
-    linear-gradient(0deg, #060a07 0%, rgb(6 10 7 / 0.5) 60%, rgb(6 10 7 / 0.85) 100%);
+    radial-gradient(60% 70% at 50% 45%, rgb(30 158 90 / 0.18), transparent 70%),
+    linear-gradient(0deg, #050706 0%, rgb(5 7 6 / 0.55) 55%, rgb(5 7 6 / 0.85) 100%);
 }
 
 .grain {
@@ -138,7 +221,7 @@
   inset: -80px;
   z-index: 60;
   pointer-events: none;
-  opacity: 0.05;
+  opacity: 0.055;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   animation: grain 0.9s steps(5) infinite;
 }
@@ -151,12 +234,8 @@
 }
 
 @keyframes breathe {
-  from { transform: scale(1); }
-  to { transform: scale(1.07); }
-}
-
-@keyframes glow {
-  50% { text-shadow: 0 0 44px rgb(63 224 106 / 0.7), 0 0 100px rgb(63 224 106 / 0.35); }
+  from { transform: scale(1.02); }
+  to { transform: scale(1.09); }
 }
 
 @keyframes ping-once {

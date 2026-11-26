@@ -1,6 +1,5 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
 import type { StoryTitle } from "@/data/titles";
 import { cn } from "@/lib/utils";
 
@@ -17,43 +16,59 @@ export function ProgressPanel({ titles, watched, essentialsLeft, hoursLeft, pace
   const pct = Math.round((done / titles.length) * 100);
 
   return (
-    <Card className="mt-7 gap-0 rounded-2xl bg-gradient-to-b from-secondary to-card px-5 py-5 ring-0 sm:px-6">
-      <div className="flex items-baseline justify-between gap-3">
-        <p className="font-display text-[34px] leading-none font-bold tabular-nums">
-          {done}
-          <span className="text-base font-semibold text-muted-foreground"> / {titles.length}</span>
-        </p>
-        <p className="text-[11px] tracking-[0.16em] text-faint uppercase">{pct}% complete</p>
+    <section aria-label="Your progress" className="glass relative overflow-hidden rounded-3xl px-5 py-6 sm:px-8 sm:py-7">
+      <div className="pointer-events-none absolute -top-24 right-0 size-64 rounded-full bg-jade/10 blur-3xl" />
+
+      <div className="relative flex items-end justify-between gap-4">
+        <div>
+          <p className="eyebrow text-[9.5px] text-faint">Your progress</p>
+          <p className="mt-2 flex items-baseline gap-2.5">
+            <span className="text-[52px] leading-none font-extralight tabular-nums sm:text-[64px]">{done}</span>
+            <span className="text-sm text-muted-foreground">of {titles.length} watched</span>
+          </p>
+        </div>
+        <p className="text-gilt font-display text-[28px] leading-none font-semibold sm:text-[34px]">{pct}%</p>
       </div>
 
-      <div className="mt-4 flex h-2.5 gap-[2px]" role="progressbar" aria-valuenow={done} aria-valuemin={0} aria-valuemax={titles.length}>
+      <div
+        role="progressbar"
+        aria-valuenow={done}
+        aria-valuemin={0}
+        aria-valuemax={titles.length}
+        className="relative mt-6 flex h-6 items-stretch gap-[3px]"
+      >
         {titles.map((t, i) => (
           <span
             key={t.id}
             title={`${t.number}. ${t.title}`}
             className={cn(
-              "flex-1 rounded-[2px] bg-[#1a211d] transition-[background,box-shadow] duration-300",
-              i > 0 && titles[i - 1].sectionId !== t.sectionId && "ml-1.5",
-              watched.has(t.id) && "bg-gradient-to-b from-[#6ff293] via-doom to-[#2fb257] shadow-[0_0_10px_rgb(63_224_106/0.5)]"
+              "flex-1 rounded-[3px] bg-white/[0.06] transition-[background,box-shadow] duration-500",
+              i > 0 && titles[i - 1].sectionId !== t.sectionId && "ml-2",
+              t.tier === "ess" && !watched.has(t.id) && "bg-gold/[0.16]",
+              watched.has(t.id) && "bg-gradient-to-b from-[#86f3b6] to-emerald shadow-[0_0_12px_rgb(61_220_132/0.45)]"
             )}
           />
         ))}
       </div>
+      <p className="relative mt-2.5 flex items-center gap-2 text-[10.5px] text-faint">
+        <span className="inline-block size-2 rounded-[2px] bg-gold/40" /> Essential
+        <span className="ml-3 inline-block size-2 rounded-[2px] bg-jade" /> Watched
+      </p>
 
-      <dl className="mt-4 grid grid-cols-3 gap-2 text-[11.5px] text-muted-foreground">
-        <div>
-          <dt className="inline">Essentials left </dt>
-          <dd className="inline font-semibold text-foreground">{essentialsLeft}</dd>
-        </div>
-        <div className="text-center">
-          <dt className="inline">Runtime left </dt>
-          <dd className="inline font-semibold text-foreground">{Math.round(hoursLeft)}h</dd>
-        </div>
-        <div className="text-right">
-          <dt className="inline">Pace </dt>
-          <dd className="inline font-semibold text-foreground">{pace}</dd>
-        </div>
+      <dl className="relative mt-5 grid grid-cols-3 divide-x divide-white/[0.07] border-t border-white/[0.07] pt-5">
+        <Stat label="Essentials left" value={String(essentialsLeft)} />
+        <Stat label="Runtime left" value={`${Math.round(hoursLeft)}h`} />
+        <Stat label="Pace needed" value={pace} />
       </dl>
-    </Card>
+    </section>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="px-3 text-center first:pl-0 last:pr-0">
+      <dt className="eyebrow text-[8.5px] tracking-[0.22em] text-faint">{label}</dt>
+      <dd className="mt-2 text-[17px] font-light tabular-nums sm:text-xl">{value}</dd>
+    </div>
   );
 }

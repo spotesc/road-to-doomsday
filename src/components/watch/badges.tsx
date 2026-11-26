@@ -1,15 +1,15 @@
+import type { ReactNode } from "react";
+import { Sparkle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { TIERS, type StoryTitle } from "@/data/titles";
-import { KINDS, isShow, lengthText } from "@/lib/format";
-import type { TitleDetails } from "@/lib/tmdb";
 import { cn } from "@/lib/utils";
 
-const tag = "h-5 rounded-[5px] px-1.5 text-[9.5px] font-bold tracking-[0.1em] uppercase";
+const tag = "h-5 rounded-full px-2 text-[9px] font-semibold tracking-[0.16em] uppercase";
 
 const TIER_STYLES = {
-  ess: "border-marvel/50 bg-marvel/15 text-[#ff6b70]",
-  rec: "border-gold/40 bg-gold/12 text-gold",
-  opt: "border-input bg-transparent text-faint",
+  ess: "border-gold/45 bg-gold/[0.1] text-gold-bright",
+  rec: "border-jade/35 bg-jade/[0.08] text-jade",
+  opt: "border-white/12 bg-transparent text-faint",
 } as const;
 
 export function TierBadge({ title, className }: { title: StoryTitle; className?: string }) {
@@ -20,39 +20,19 @@ export function TierBadge({ title, className }: { title: StoryTitle; className?:
   );
 }
 
-export function TitleBadges({
-  title,
-  details,
-  compact = false,
-}: {
-  title: StoryTitle;
-  details?: TitleDetails;
-  compact?: boolean;
-}) {
-  const length = lengthText(title, details);
+export function PickBadge({ className }: { className?: string }) {
   return (
-    <div className="flex flex-wrap gap-1.5">
-      <TierBadge title={title} />
-      {!compact && (
-        <>
-          <Badge
-            variant="outline"
-            className={cn(tag, isShow(title) ? "border-sky/35 bg-sky/12 text-sky" : "border-input text-muted-foreground")}
-          >
-            {KINDS[title.kind]}
-          </Badge>
-          {length && (
-            <Badge variant="outline" className={cn(tag, "border-input text-muted-foreground")}>
-              {length}
-            </Badge>
-          )}
-          {title.pick && (
-            <Badge variant="outline" className={cn(tag, "border-doom/30 bg-doom/8 text-doom")}>
-              Disney+ pick
-            </Badge>
-          )}
-        </>
-      )}
-    </div>
+    <Badge variant="outline" className={cn(tag, "gap-1 border-white/15 text-steel", className)}>
+      <Sparkle className="size-2.5 fill-current" />
+      Disney+ pick
+    </Badge>
+  );
+}
+
+export function PlainBadge({ children }: { children: ReactNode }) {
+  return (
+    <Badge variant="outline" className={cn(tag, "border-white/12 text-muted-foreground")}>
+      {children}
+    </Badge>
   );
 }

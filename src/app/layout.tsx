@@ -1,13 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Inter } from "next/font/google";
+import { Cinzel, Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
-const barlow = Barlow_Condensed({
-  variable: "--font-barlow",
+const cinzel = Cinzel({
+  variable: "--font-cinzel",
   subsets: ["latin"],
   weight: ["500", "600", "700"],
 });
@@ -29,14 +29,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#050607",
+  themeColor: "#050706",
   colorScheme: "dark",
   viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-GB" className={`dark ${inter.variable} ${barlow.variable}`}>
+    <html lang="en-GB" className={`dark ${inter.variable} ${cinzel.variable}`}>
       <body className="min-h-dvh">
         <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
         <Toaster position="bottom-center" />

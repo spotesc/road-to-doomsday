@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { Fragment, useSyncExternalStore } from "react";
 import { pad } from "@/lib/format";
 
 const everySecond = (onTick: () => void) => {
@@ -24,9 +24,9 @@ export function useNowMinutes() {
 
 const UNITS = [
   { key: "d", label: "Days" },
-  { key: "h", label: "Hrs" },
-  { key: "m", label: "Min" },
-  { key: "s", label: "Sec" },
+  { key: "h", label: "Hours" },
+  { key: "m", label: "Minutes" },
+  { key: "s", label: "Seconds" },
 ] as const;
 
 export function Countdown({ target }: { target: Date | null }) {
@@ -39,21 +39,27 @@ export function Countdown({ target }: { target: Date | null }) {
     left %= 86400;
     const h = Math.floor(left / 3600);
     left %= 3600;
-    values = { d: String(d), h: pad(h), m: pad(Math.floor(left / 60)), s: pad(left % 60) };
+    values = { d: pad(d), h: pad(h), m: pad(Math.floor(left / 60)), s: pad(left % 60) };
   }
 
   return (
-    <div className="mt-6 flex justify-center gap-2 sm:gap-2.5" role="timer" aria-label="Time until Avengers: Doomsday">
-      {UNITS.map((unit) => (
-        <div
-          key={unit.key}
-          className="w-[74px] rounded-xl border bg-card/80 py-2.5 backdrop-blur-md sm:w-[88px] sm:py-3"
-        >
-          <span className="block font-display text-[28px] leading-none font-bold tabular-nums sm:text-[34px]">
-            {values ? values[unit.key] : "–"}
-          </span>
-          <span className="mt-1.5 block text-[9.5px] tracking-[0.16em] text-faint uppercase">{unit.label}</span>
-        </div>
+    <div
+      role="timer"
+      aria-label="Time until Avengers: Doomsday"
+      className="mx-auto mt-8 flex max-w-[440px] items-stretch justify-center"
+    >
+      {UNITS.map((unit, i) => (
+        <Fragment key={unit.key}>
+          {i > 0 && <span className="w-px bg-gradient-to-b from-transparent via-white/15 to-transparent" />}
+          <div className="flex-1 px-2 sm:px-4">
+            <span
+              className={`block text-[40px] leading-none font-extralight tabular-nums sm:text-[54px] ${unit.key === "s" ? "text-jade" : "text-foreground"}`}
+            >
+              {values ? values[unit.key] : "––"}
+            </span>
+            <span className="eyebrow mt-2.5 block text-[8.5px] tracking-[0.28em] text-faint">{unit.label}</span>
+          </div>
+        </Fragment>
       ))}
     </div>
   );

@@ -13,36 +13,51 @@ interface Props {
 }
 
 export function Finale({ backdrop, release, status, ready }: Props) {
+  const credits = [
+    { label: "In cinemas", value: release ? `${release.long}${release.region ? ` · ${release.region}` : ""}` : "December 2026" },
+    { label: "Directed by", value: "Anthony & Joe Russo" },
+    { label: "Doctor Doom", value: "Robert Downey Jr." },
+  ];
+
   return (
     <section
       className={cn(
-        "relative isolate mt-11 overflow-hidden rounded-[18px] border border-doom/30 bg-[#060a07] px-5 pt-11 pb-10 text-center",
-        ready && "shadow-[0_0_70px_rgb(63_224_106/0.18)]"
+        "letterbox relative isolate mt-20 overflow-hidden rounded-3xl border border-white/[0.07] px-6 pt-16 pb-14 text-center sm:mt-28 sm:pt-20 sm:pb-16",
+        ready && "border-jade/35 shadow-[0_0_80px_-10px_rgb(61_220_132/0.3)]"
       )}
     >
-      <div className="absolute inset-0 -z-10 opacity-20">
-        <BackdropImage path={backdrop} sizes="(max-width: 896px) 100vw, 896px" />
+      <div className="absolute inset-0 -z-10 opacity-35">
+        <BackdropImage path={backdrop} sizes="(max-width: 1024px) 100vw, 1024px" />
       </div>
       <div className="finale-veil absolute inset-0 -z-10" />
+
       <Image
         src="/images/avengers.webp"
         alt=""
         width={1456}
         height={819}
         className={cn(
-          "pointer-events-none absolute top-1/2 left-1/2 -z-10 w-[150%] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-50 mix-blend-screen",
+          "mx-auto aspect-square w-[190px] rounded-full object-cover drop-shadow-[0_0_40px_rgb(61_220_132/0.35)] [mask-image:radial-gradient(circle,#000_57%,transparent_70%)] sm:w-[240px]",
           ready && "animate-pulse"
         )}
       />
-      <p className="text-[10.5px] font-bold tracking-[0.3em] text-doom uppercase text-glow">The finish line</p>
-      <h2 className="mt-3 font-display text-[clamp(32px,9vw,56px)] leading-none font-bold tracking-[0.02em] uppercase [text-shadow:0_3px_24px_rgb(0_0_0/0.95)]">
-        Avengers: Doomsday
+
+      <p className="eyebrow mt-8 text-[10px] text-gold">The finish line</p>
+      <h2 className="mt-4 font-display text-[clamp(34px,7.5vw,76px)] leading-none font-semibold tracking-[0.035em]">
+        <span className="text-metal">Avengers: Doomsday</span>
       </h2>
-      <p className="mt-2.5 text-[13px] text-[#aab4ae] [text-shadow:0_2px_12px_rgb(0_0_0/0.9)]">
-        {release ? `${release.region ? `${release.region} · ` : ""}In cinemas ${release.long}` : "In cinemas December 2026"}
-        {" · "}Dir. Anthony &amp; Joe Russo · Robert Downey Jr. as Doctor Doom
-      </p>
-      <p className="mt-4 text-sm font-semibold text-doom">{status}</p>
+      <div className="hairline-gold mx-auto mt-7 w-44" />
+
+      <dl className="mx-auto mt-7 grid max-w-md gap-4">
+        {credits.map((c) => (
+          <div key={c.label}>
+            <dt className="eyebrow text-[8.5px] tracking-[0.3em] text-faint">{c.label}</dt>
+            <dd className="mt-1.5 font-display text-[15px] tracking-[0.06em] text-steel">{c.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <p className="mt-9 text-sm font-medium text-jade">{status}</p>
     </section>
   );
 }

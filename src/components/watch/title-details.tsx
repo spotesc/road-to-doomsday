@@ -1,18 +1,18 @@
 "use client";
 
 import type { ComponentType, ReactNode } from "react";
-import { Check, ExternalLink, Play } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, ArrowRight, Check, ExternalLink, Play, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from "@/components/ui/drawer";
 import type { StoryTitle } from "@/data/titles";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { fullName, nameOf, pad } from "@/lib/format";
+import { KINDS, fullName, lengthText, nameOf, pad } from "@/lib/format";
 import type { DetailsMap } from "@/lib/tmdb";
 import { cn } from "@/lib/utils";
-import { TitleBadges } from "./badges";
+import { PickBadge, PlainBadge, TierBadge } from "./badges";
 import { BackdropImage, PosterImage } from "./tmdb-image";
+import { ghostButton, primaryButton } from "./up-next";
 
 interface Props {
   title: StoryTitle | null;
@@ -24,8 +24,6 @@ interface Props {
   onClose: () => void;
 }
 
-const tag = "h-5 rounded-[5px] border-input px-1.5 text-[9.5px] font-bold tracking-[0.1em] text-muted-foreground uppercase";
-
 export function TitleDetails({ title, titles, details, watched, onToggle, onNavigate, onClose }: Props) {
   const desktop = useMediaQuery("(min-width: 640px)", true);
   const open = title !== null;
@@ -35,7 +33,7 @@ export function TitleDetails({ title, titles, details, watched, onToggle, onNavi
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent
-          className="max-h-[calc(100dvh-3rem)] gap-0 overflow-y-auto rounded-[20px] border-input bg-card p-0 sm:max-w-[760px]"
+          className="max-h-[calc(100dvh-3rem)] gap-0 overflow-y-auto rounded-3xl border-white/10 bg-popover p-0 shadow-[0_60px_120px_-30px_rgb(0_0_0/0.95)] sm:max-w-[800px]"
           onKeyDown={(e) => {
             if (!title) return;
             const i = titles.indexOf(title);
@@ -62,7 +60,7 @@ export function TitleDetails({ title, titles, details, watched, onToggle, onNavi
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="max-h-[94dvh] border-input bg-card">
+      <DrawerContent className="max-h-[94dvh] border-white/10 bg-popover">
         <div className="overflow-y-auto pb-[env(safe-area-inset-bottom)]">
           {title && (
             <Body
@@ -101,69 +99,66 @@ function Body({
   const i = titles.indexOf(title);
   const prev = titles[i - 1];
   const next = titles[i + 1];
+  const length = lengthText(title, d);
 
   return (
     <>
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-gradient-to-br from-[#1b231f] to-card sm:aspect-[16/7.5] sm:rounded-t-[20px]">
-        <BackdropImage path={d?.backdrop} sizes="(max-width: 640px) 100vw, 760px" className="object-[center_25%]" />
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-secondary sm:aspect-[16/7.5]">
+        <BackdropImage path={d?.backdrop} sizes="(max-width: 640px) 100vw, 800px" className="object-[center_25%]" priority />
         <div className="sheet-veil absolute inset-0" />
       </div>
 
-      <div className="relative -mt-16 grid grid-cols-[96px_minmax(0,1fr)] gap-x-4 px-4 sm:-mt-24 sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-x-6 sm:px-7">
-        <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-gradient-to-br from-[#1d2521] to-[#0b0f0d] shadow-[0_20px_44px_rgb(0_0_0/0.7),0_0_0_1px_rgb(255_255_255/0.1)]">
-          <PosterImage path={d?.poster} sizes="140px" priority />
+      <div className="relative -mt-16 grid grid-cols-[96px_minmax(0,1fr)] gap-x-4 px-5 sm:-mt-28 sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-x-7 sm:px-9">
+        <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-secondary shadow-[0_30px_60px_-15px_rgb(0_0_0/0.9)] ring-1 ring-white/12">
+          <PosterImage path={d?.poster} sizes="150px" priority />
         </div>
-        <div className="self-end pt-6 sm:pt-10">
-          <p className="text-[10.5px] font-bold tracking-[0.26em] text-doom uppercase text-glow">
-            No. {pad(title.number)} of {titles.length} · {title.sectionTitle}
+        <div className="self-end pt-6 sm:pt-12">
+          <p className="eyebrow text-[9.5px] text-jade">
+            No. {pad(title.number)} / {titles.length}
+            <span className="ml-2.5 text-faint">{title.sectionTitle}</span>
           </p>
-          <Title className="mt-2 font-display text-[26px] leading-none font-bold uppercase sm:text-[40px]">
-            {nameOf(title, d)}
-            {title.season && <span className="ml-2 text-muted-foreground">S{title.season}</span>}
+          <Title className="mt-3 font-display text-[26px] leading-[1.02] font-semibold tracking-[0.02em] sm:text-[42px]">
+            <span className="text-metal">{nameOf(title, d)}</span>
+            {title.season && <span className="ml-2.5 text-[0.55em] text-muted-foreground">Season {title.season}</span>}
           </Title>
-          <Description className="mt-1.5 text-sm text-muted-foreground italic">{d?.tagline || title.year}</Description>
+          <Description className="mt-2 text-sm text-muted-foreground italic">{d?.tagline || `${KINDS[title.kind]}, ${title.year}`}</Description>
         </div>
       </div>
 
-      <div className="px-4 pt-4 pb-5 sm:px-7">
-        <div className="flex flex-wrap gap-1.5">
-          <TitleBadges title={title} details={d} />
-          <Badge variant="outline" className={tag}>
-            {title.year}
-          </Badge>
+      <div className="px-5 pt-5 pb-6 sm:px-9">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <TierBadge title={title} />
+          {title.pick && <PickBadge />}
+          <PlainBadge>{KINDS[title.kind]}</PlainBadge>
+          <PlainBadge>{title.year}</PlainBadge>
+          {length && <PlainBadge>{length}</PlainBadge>}
           {d?.rating && (
-            <Badge variant="outline" className={tag}>
-              TMDB ★ {d.rating.toFixed(1)}
-            </Badge>
+            <PlainBadge>
+              <Star className="size-2.5 fill-gold text-gold" />
+              {d.rating.toFixed(1)}
+            </PlainBadge>
           )}
-          {d?.genres.slice(0, 2).map((g) => (
-            <Badge key={g} variant="outline" className={tag}>
-              {g}
-            </Badge>
-          ))}
+          {d?.genres.slice(0, 2).map((g) => <PlainBadge key={g}>{g}</PlainBadge>)}
         </div>
 
-        <div className="mt-4 rounded-xl border border-doom/30 bg-doom/6 px-3.5 py-3 text-sm">
-          <p className="mb-0.5 text-[10px] font-bold tracking-[0.22em] text-doom uppercase">Why watch it</p>
-          {title.why}
+        <div className="mt-5 rounded-r-xl border-l-2 border-gold/70 bg-gold/[0.06] py-3 pr-4 pl-4">
+          <p className="eyebrow text-[9px] text-gold">Why watch it</p>
+          <p className="mt-1.5 text-[15px] leading-relaxed text-foreground">{title.why}</p>
         </div>
 
-        {d?.overview && <p className="mt-4 text-[14.5px] leading-relaxed text-[#c4ccc7]">{d.overview}</p>}
+        {d?.overview && <p className="mt-5 text-[14.5px] leading-relaxed text-[#c3cbc7]">{d.overview}</p>}
 
-        <div className="mt-5 flex flex-wrap gap-2">
+        <div className="mt-6 flex flex-wrap gap-2.5">
           <Button
             onClick={() => onToggle(title.id)}
-            variant={done ? "outline" : "default"}
-            className={cn(
-              "h-10 rounded-full px-4",
-              done ? "border-doom/30 bg-doom/10 text-doom hover:bg-doom/15" : "shadow-glow"
-            )}
+            variant="outline"
+            className={cn(done ? `${ghostButton} border-jade/35 text-jade hover:text-jade` : primaryButton)}
           >
             <Check className="stroke-3" />
-            {done ? "Watched · undo" : "Mark watched"}
+            {done ? "Watched · undo" : "Mark as watched"}
           </Button>
           {d?.trailer && (
-            <Button asChild variant="outline" className="h-10 rounded-full px-4">
+            <Button asChild variant="outline" className={ghostButton}>
               <a href={`https://www.youtube.com/watch?v=${d.trailer}`} target="_blank" rel="noopener noreferrer">
                 <Play className="fill-current" />
                 Trailer
@@ -171,7 +166,7 @@ function Body({
             </Button>
           )}
           {d?.link && (
-            <Button asChild variant="outline" className="h-10 rounded-full px-4">
+            <Button asChild variant="outline" className={ghostButton}>
               <a href={d.link} target="_blank" rel="noopener noreferrer">
                 <ExternalLink />
                 TMDB
@@ -181,7 +176,7 @@ function Body({
         </div>
       </div>
 
-      <nav aria-label="Story order" className="grid grid-cols-2 gap-2 border-t px-4 pt-3.5 pb-5 sm:px-7">
+      <nav aria-label="Story order" className="grid grid-cols-2 gap-2.5 border-t border-white/[0.07] px-5 pt-4 pb-6 sm:px-9">
         {[prev, next].map((t, index) => (
           <button
             key={index}
@@ -189,16 +184,16 @@ function Body({
             disabled={!t}
             onClick={() => t && onNavigate(t.id)}
             className={cn(
-              "min-w-0 rounded-xl border bg-background px-3.5 py-2.5 transition-colors hover:border-input disabled:invisible",
+              "group min-w-0 rounded-2xl border border-white/[0.07] bg-white/[0.02] px-4 py-3 transition-colors hover:border-white/15 hover:bg-white/[0.04] disabled:invisible",
               index === 1 ? "text-right" : "text-left"
             )}
           >
-            <small className="block text-[9.5px] font-bold tracking-[0.2em] text-faint uppercase">
+            <span className={cn("eyebrow flex items-center gap-1.5 text-[8.5px] text-faint", index === 1 && "justify-end")}>
+              {index === 0 && <ArrowLeft className="size-3" />}
               {index === 0 ? "Before this" : "After this"}
-            </small>
-            <span className="mt-0.5 block truncate text-[13.5px] font-semibold">
-              {t ? fullName(t, details[t.id]) : ""}
+              {index === 1 && <ArrowRight className="size-3" />}
             </span>
+            <span className="mt-1 block truncate text-[13.5px] font-semibold">{t ? fullName(t, details[t.id]) : ""}</span>
           </button>
         ))}
       </nav>

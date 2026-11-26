@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Every Marvel film and series in story order before Avengers: Doomsday, with tick boxes.",
     start_url: "/",
     display: "standalone",
-    background_color: "#050607",
-    theme_color: "#050607",
+    background_color: "#050706",
+    theme_color: "#050706",
     icons: [
       { src: "/icon.png", sizes: "512x512", type: "image/png" },
       { src: "/apple-icon.png", sizes: "180x180", type: "image/png" },
