@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>The Road to Doomsday</title>
+  <meta name="description" content="Every Marvel film and series in story order before Avengers: Doomsday, with tick boxes. From Spotesc.">
+  <meta name="theme-color" content="#050706">
+  <link rel="canonical" href="https://spotesc-doomsday.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://spotesc-doomsday.vercel.app/">
+  <meta property="og:title" content="The Road to Doomsday">
+  <meta property="og:description" content="Every Marvel film and series in story order, with tick boxes. From Spotesc.">
+  <meta property="og:image" content="https://spotesc-doomsday.vercel.app/images/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preload" as="image" href="images/doom.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <img class="marvel" src="images/marvel.png" width="360" height="161" alt="Marvel">
+    <p class="by">from <strong>Spotesc</strong></p>
+    <button class="share" type="button" data-action="share">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
+      <span>Share</span>
+    </button>
+  </header>
+
+  <section class="hero">
+    <div class="hero-art" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <p class="eyebrow">The road to</p>
+      <h1>Doomsday</h1>
+      <p class="lede">Every Marvel film and series in story order, ready for <em>Avengers: Doomsday</em>. Tick them off as you go. Your ticks stay on your own phone or computer.</p>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="big" id="days">–</span>
+          <span class="label" id="days-label">days to go</span>
+        </div>
+        <div class="stat">
+          <span class="big" id="pct">0%</span>
+          <span class="label" id="done-label">watched</span>
+          <span class="bar"><i id="pct-bar"></i></span>
+        </div>
+        <div class="stat">
+          <span class="big" id="left">–</span>
+          <span class="label">left to watch, roughly</span>
+        </div>
+      </div>
+
+      <div class="next" id="next">
+        <div class="next-text">
+          <span class="next-k">Up next</span>
+          <button class="next-t" type="button" data-action="jump" id="next-title"></button>
+          <span class="next-m" id="next-meta"></span>
+        </div>
+        <button class="next-do" type="button" data-action="watch-next">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>
+          <span>Watched</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <nav class="controls" aria-label="Filter the list">
+    <div class="controls-inner">
+      <div class="filters" id="filters" role="group" aria-label="Show"></div>
+      <span class="mini" id="mini"></span>
+      <button class="hide" type="button" data-action="hide" aria-pressed="false">
+        <span class="switch" aria-hidden="true"></span>
+        <span>Hide watched</span>
+      </button>
+    </div>
+  </nav>
+
+  <main id="list"></main>
+
+  <section class="finale" id="finale">
+    <img src="images/avengers.webp" width="1456" height="819" alt="" loading="lazy">
+    <p class="kicker">The finish line</p>
+    <h2>Avengers: Doomsday</h2>
+    <p class="finale-date">In cinemas 18 December 2026</p>
+    <p class="finale-status" id="finale-status"></p>
+  </section>
+
+  <footer class="foot">
+    <p>Made by Spotesc. Story order follows Disney+’s timeline order. “Disney+ pick” marks the 15 titles on Disney+’s official Doomsday watchlist. Times are rough.</p>
+    <p>An unofficial fan list, not connected to Marvel Studios or Disney. Marvel, the Avengers logo and the Doomsday poster belong to Marvel.</p>
+    <button class="reset" type="button" data-action="reset">Clear my ticks</button>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="titles.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

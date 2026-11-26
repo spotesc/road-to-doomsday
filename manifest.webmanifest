@@ -1,0 +1,13 @@
+{
+  "name": "The Road to Doomsday",
+  "short_name": "Doomsday",
+  "description": "Every Marvel film and series in story order before Avengers: Doomsday, with tick boxes.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050706",
+  "theme_color": "#050706",
+  "icons": [
+    { "src": "images/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "images/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
