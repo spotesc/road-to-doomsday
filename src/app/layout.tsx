@@ -3,6 +3,7 @@ import { Bebas_Neue, Cinzel, IBM_Plex_Mono, Inter } from "next/font/google";
 import { Atmosphere } from "@/components/watch/atmosphere";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SITE_URL, moveScript } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
@@ -28,7 +29,8 @@ const plexMono = IBM_Plex_Mono({
 const description = "Every Marvel film and series in story order before Avengers: Doomsday, with tick boxes. From Spotesc.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://spotesc-doomsday.vercel.app"),
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: "/" },
   title: "Road to Doomsday · Spotesc",
   description,
   applicationName: "Road to Doomsday",
@@ -50,6 +52,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en-GB" className={`dark ${inter.variable} ${cinzel.variable} ${bebas.variable} ${plexMono.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: moveScript }} />
+      </head>
       <body className="min-h-dvh">
         <Atmosphere />
         <TooltipProvider delayDuration={300}>{children}</TooltipProvider>

@@ -2,7 +2,7 @@
 
 Every Marvel film and series in story order before *Avengers: Doomsday*, with tick boxes.
 
-Live at https://spotesc-doomsday.vercel.app
+Live at https://doomsdaycountdown.vercel.app (the old spotesc-doomsday.vercel.app address forwards there and brings ticks with it)
 
 - Story order follows Disney+'s timeline, with an Essential / Recommended / Optional tier and a "why watch it" line for every title.
 - "Disney+ pick" marks the titles on Disney+'s official Doomsday watchlist.
