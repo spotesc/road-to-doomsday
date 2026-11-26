@@ -5,12 +5,12 @@ import { ArrowLeft, ArrowRight, Check, ExternalLink, Play, Star } from "lucide-r
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from "@/components/ui/drawer";
-import type { StoryTitle } from "@/data/titles";
+import { TITLES, type StoryTitle } from "@/data/titles";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { KINDS, fullName, lengthText, nameOf, pad } from "@/lib/format";
 import type { DetailsMap } from "@/lib/tmdb";
 import { cn } from "@/lib/utils";
-import { PickBadge, PlainBadge, TierBadge } from "./badges";
+import { PlainBadge, TierBadge } from "./badges";
 import { BackdropImage, PosterImage } from "./tmdb-image";
 import { ghostButton, primaryButton } from "./up-next";
 
@@ -36,9 +36,10 @@ export function TitleDetails({ title, titles, details, watched, onToggle, onNavi
           className="max-h-[calc(100dvh-3rem)] gap-0 overflow-y-auto rounded-3xl border-white/10 bg-popover p-0 shadow-[0_80px_160px_-40px_rgb(0_0_0/1),0_0_0_1px_rgb(184_184_184/0.06)] sm:max-w-[800px]"
           onKeyDown={(e) => {
             if (!title) return;
-            const i = titles.indexOf(title);
-            if (e.key === "ArrowRight" && titles[i + 1]) onNavigate(titles[i + 1].id);
-            if (e.key === "ArrowLeft" && titles[i - 1]) onNavigate(titles[i - 1].id);
+            const order = orderFor(title, titles);
+            const i = order.indexOf(title);
+            if (e.key === "ArrowRight" && order[i + 1]) onNavigate(order[i + 1].id);
+            if (e.key === "ArrowLeft" && order[i - 1]) onNavigate(order[i - 1].id);
           }}
         >
           {title && (
@@ -80,6 +81,8 @@ export function TitleDetails({ title, titles, details, watched, onToggle, onNavi
   );
 }
 
+const orderFor = (title: StoryTitle, titles: StoryTitle[]) => (titles.includes(title) ? titles : TITLES);
+
 function Body({
   title,
   titles,
@@ -96,9 +99,10 @@ function Body({
 }) {
   const d = details[title.id];
   const done = watched.has(title.id);
-  const i = titles.indexOf(title);
-  const prev = titles[i - 1];
-  const next = titles[i + 1];
+  const order = orderFor(title, titles);
+  const i = order.indexOf(title);
+  const prev = order[i - 1];
+  const next = order[i + 1];
   const length = lengthText(title, d);
 
   return (
@@ -114,7 +118,7 @@ function Body({
         </div>
         <div className="self-end pt-6 sm:pt-12">
           <p className="eyebrow text-[9px] text-silver">
-            No. {pad(title.number)} / {titles.length}
+            No. {pad(title.number)}
             <span className="ml-2.5 text-steel">— {title.sectionTitle}</span>
           </p>
           <Title className="poster-type mt-3 text-[38px] leading-[0.9] sm:text-[64px]">
@@ -128,7 +132,6 @@ function Body({
       <div className="px-5 pt-5 pb-6 sm:px-9">
         <div className="flex flex-wrap items-center gap-1.5">
           <TierBadge title={title} />
-          {title.pick && <PickBadge />}
           <PlainBadge>{KINDS[title.kind]}</PlainBadge>
           <PlainBadge>{title.year}</PlainBadge>
           {length && <PlainBadge>{length}</PlainBadge>}

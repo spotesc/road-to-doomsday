@@ -67,8 +67,15 @@ export function SectionBlock({ section, index, matching, visible, watched, detai
               {section.tagline}
             </p>
           )}
-          <h2 id={`${section.id}-title`} className="poster-type mt-3 text-[clamp(46px,9vw,104px)] leading-[0.86]">
-            <span className="text-metal">{section.title}</span>
+          <h2 id={`${section.id}-title`} className="poster-type mt-3 text-[clamp(46px,9vw,104px)] leading-[0.86] text-balance">
+            <span className="text-metal">
+              {section.title.split(" ").map((word, i) => (
+                <span key={i}>
+                  {i > 0 && " "}
+                  <span className={word.includes("-") ? "whitespace-nowrap" : undefined}>{word}</span>
+                </span>
+              ))}
+            </span>
           </h2>
           <p className="mt-4 max-w-xl text-[13.5px] leading-relaxed text-muted-foreground sm:text-[14.5px]">{section.note}</p>
           <div className="mt-6 flex items-center gap-4">

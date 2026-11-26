@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Sparkle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { TIERS, type StoryTitle } from "@/data/titles";
 import { cn } from "@/lib/utils";
@@ -16,15 +15,6 @@ export function TierBadge({ title, className }: { title: StoryTitle; className?:
   return (
     <Badge variant="outline" className={cn(tag, TIER_STYLES[title.tier], className)}>
       {TIERS[title.tier]}
-    </Badge>
-  );
-}
-
-export function PickBadge({ className }: { className?: string }) {
-  return (
-    <Badge variant="outline" className={cn(tag, "gap-1 border-silver/25 text-silver", className)}>
-      <Sparkle className="size-2.5 fill-current" />
-      Disney+ pick
     </Badge>
   );
 }

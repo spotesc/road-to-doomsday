@@ -80,12 +80,8 @@ export function SiteFooter({ canReset, onReset }: { canReset: boolean; onReset: 
 
       <div className="mx-auto mt-8 max-w-2xl space-y-3 px-2 text-[12px] leading-relaxed text-faint">
         <p>
-          An unofficial fan project, not affiliated with or endorsed by Marvel Studios or Disney. All images and posters
-          are freely sourced from TMDB and belong to their respective owners.
-        </p>
-        <p>
-          Story order follows Disney+’s timeline. “Disney+ pick” marks the titles on Disney+’s official Doomsday
-          watchlist.
+          An unofficial fan project, not affiliated with or endorsed by Marvel Studios. All images and posters are freely
+          sourced from TMDB and belong to their respective owners.
         </p>
         <p className="text-[10.5px] text-faint/80">This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
       </div>

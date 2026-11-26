@@ -8,14 +8,16 @@ import { cn } from "@/lib/utils";
 interface Props {
   titles: StoryTitle[];
   watched: Set<string>;
-  essentialsLeft: number;
+  routeLabel: string;
+  markEssentials: boolean;
+  titlesLeft: number;
   hoursLeft: number;
   pace: string;
 }
 
-export function ProgressPanel({ titles, watched, essentialsLeft, hoursLeft, pace }: Props) {
-  const done = titles.filter((t) => watched.has(t.id)).length;
-  const pct = Math.round((done / titles.length) * 100);
+export function ProgressPanel({ titles, watched, routeLabel, markEssentials, titlesLeft, hoursLeft, pace }: Props) {
+  const done = titles.length - titlesLeft;
+  const pct = titles.length ? Math.round((done / titles.length) * 100) : 0;
 
   return (
     <motion.section
@@ -30,7 +32,9 @@ export function ProgressPanel({ titles, watched, essentialsLeft, hoursLeft, pace
 
       <div className="relative flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
         <div>
-          <p className="eyebrow text-[9px] text-steel">Progress</p>
+          <p className="eyebrow text-[9px] text-steel">
+            Progress <span className="mx-2 text-faint">—</span> {routeLabel}
+          </p>
           <h2 className="poster-type mt-2 text-[28px] leading-none sm:text-[38px]">
             <span className="text-metal">Everything has led to this.</span>
           </h2>
@@ -49,6 +53,7 @@ export function ProgressPanel({ titles, watched, essentialsLeft, hoursLeft, pace
         aria-valuenow={done}
         aria-valuemin={0}
         aria-valuemax={titles.length}
+        aria-label={`${routeLabel} progress`}
         className="relative mt-7 flex h-7 items-stretch gap-[3px]"
       >
         {titles.map((t, i) => (
@@ -58,19 +63,23 @@ export function ProgressPanel({ titles, watched, essentialsLeft, hoursLeft, pace
             className={cn(
               "flex-1 rounded-[2px] bg-white/[0.055] transition-[background,box-shadow] duration-700",
               i > 0 && titles[i - 1].sectionId !== t.sectionId && "ml-2.5",
-              t.tier === "ess" && !watched.has(t.id) && "bg-crimson/25",
+              markEssentials && t.tier === "ess" && !watched.has(t.id) && "bg-crimson/25",
               watched.has(t.id) && "bg-gradient-to-b from-[#a9d4c2] via-mint to-forest shadow-[0_0_12px_rgb(143_191_170/0.4)]"
             )}
           />
         ))}
       </div>
       <p className="relative mt-3 flex items-center gap-2 font-mono text-[9.5px] tracking-[0.18em] text-steel uppercase">
-        <span className="inline-block size-2 rounded-[1px] bg-crimson/80" /> Essential
-        <span className="ml-4 inline-block size-2 rounded-[1px] bg-mint" /> Watched
+        {markEssentials && (
+          <>
+            <span className="inline-block size-2 rounded-[1px] bg-crimson/80" /> Essential
+          </>
+        )}
+        <span className={cn("inline-block size-2 rounded-[1px] bg-mint", markEssentials && "ml-4")} /> Watched
       </p>
 
       <dl className="relative mt-6 grid grid-cols-3 divide-x divide-white/[0.07] border-t border-white/[0.07] pt-5">
-        <Stat label="Essentials left" value={String(essentialsLeft)} />
+        <Stat label="Titles left" value={String(titlesLeft)} />
         <Stat label="Runtime left" value={`${Math.round(hoursLeft)}h`} />
         <Stat label="Pace needed" value={pace} />
       </dl>

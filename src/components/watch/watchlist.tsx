@@ -10,10 +10,11 @@ import { fullName, minsOf } from "@/lib/format";
 import type { DetailsMap } from "@/lib/tmdb";
 import { AudioDock } from "./audio-control";
 import { useNowMinutes } from "./countdown";
-import { FILTERS, filterTest, type FilterKey, type ViewKey } from "./filters";
+import { KIND_FILTERS, ROUTES, kindOf, routeOf, type KindKey, type RouteKey, type ViewKey } from "./filters";
 import { Finale } from "./finale";
 import { Hero } from "./hero";
 import { ProgressPanel } from "./progress-panel";
+import { RoutePicker } from "./route-picker";
 import { SearchCommand } from "./search-command";
 import { SectionBlock } from "./section-block";
 import { SiteFooter } from "./site-footer";
@@ -22,18 +23,41 @@ import { Toolbar } from "./toolbar";
 import { UpNext } from "./up-next";
 
 interface Prefs {
-  filter: FilterKey;
+  route: RouteKey;
+  kind: KindKey;
   view: ViewKey;
   hide: boolean;
 }
 
+interface StoredPrefs extends Partial<Prefs> {
+  filter?: string;
+}
+
 const NO_TICKS: string[] = [];
-const DEFAULT_PREFS: Prefs = { filter: "all", view: "list", hide: false };
+const DEFAULT_PREFS: StoredPrefs = { route: "everything", kind: "all", view: "list", hide: false };
 const byId = new Map(TITLES.map((t) => [t.id, t]));
+
+function readPrefs(stored: StoredPrefs): Prefs {
+  const legacy = stored.filter;
+  return {
+    route: ROUTES.some((r) => r.key === stored.route)
+      ? (stored.route as RouteKey)
+      : legacy === "ess"
+        ? "essentials"
+        : "everything",
+    kind: KIND_FILTERS.some((k) => k.key === stored.kind)
+      ? (stored.kind as KindKey)
+      : legacy === "films" || legacy === "series"
+        ? legacy
+        : "all",
+    view: stored.view === "grid" ? "grid" : "list",
+    hide: stored.hide === true,
+  };
+}
 
 export function Watchlist({ details }: { details: DetailsMap }) {
   const [watchedList, setWatchedList] = useStored<string[]>("road-to-doomsday:watched", NO_TICKS);
-  const [storedPrefs, setPrefs] = useStored<Partial<Prefs>>("road-to-doomsday:prefs", DEFAULT_PREFS);
+  const [storedPrefs, setPrefs] = useStored<StoredPrefs>("road-to-doomsday:prefs", DEFAULT_PREFS);
   const [openId, setOpenId] = useState<string | null>(null);
   const [searching, setSearching] = useState(false);
   const release = useRelease();
@@ -42,25 +66,24 @@ export function Watchlist({ details }: { details: DetailsMap }) {
 
   const watched = useMemo(() => new Set(watchedList.filter((id) => byId.has(id))), [watchedList]);
 
-  const prefs: Prefs = {
-    filter: FILTERS.some((f) => f.key === storedPrefs.filter) ? (storedPrefs.filter as FilterKey) : "all",
-    view: storedPrefs.view === "grid" ? "grid" : "list",
-    hide: storedPrefs.hide === true,
-  };
+  const prefs = readPrefs(storedPrefs);
   const updatePrefs = (patch: Partial<Prefs>) => setPrefs({ ...prefs, ...patch });
 
-  const test = filterTest(prefs.filter);
-  const inView = TITLES.filter(test);
+  const route = routeOf(prefs.route);
+  const kind = kindOf(prefs.kind);
+  const routeTitles = TITLES.filter(route.test);
+  const inView = routeTitles.filter(kind.test);
   const next = inView.find((t) => !watched.has(t.id)) ?? null;
-  const counts = Object.fromEntries(FILTERS.map((f) => [f.key, TITLES.filter(f.test).length])) as Record<FilterKey, number>;
+  const counts = Object.fromEntries(KIND_FILTERS.map((k) => [k.key, routeTitles.filter(k.test).length])) as Record<KindKey, number>;
 
-  const minsLeft = TITLES.filter((t) => !watched.has(t.id)).reduce((sum, t) => sum + minsOf(t, details[t.id]), 0);
+  const routeLeft = routeTitles.filter((t) => !watched.has(t.id));
+  const minsLeft = routeLeft.reduce((sum, t) => sum + minsOf(t, details[t.id]), 0);
   const hoursLeft = minsLeft / 60;
   const daysLeft = release && now !== null ? (release.at.getTime() - now) / 86_400_000 : null;
   const pace = !minsLeft ? "Done" : daysLeft !== null && daysLeft > 0 ? `${(hoursLeft / daysLeft).toFixed(1)}h/day` : "–";
-  const essentialsLeft = TITLES.filter((t) => t.tier === "ess" && !watched.has(t.id)).length;
+  const routeSeen = routeTitles.length - routeLeft.length;
 
-  const everything = watched.size === TITLES.length;
+  const ready = routeLeft.length === 0;
   const wholeDays = daysLeft === null ? null : Math.floor(daysLeft);
   const when =
     wholeDays === null
@@ -72,7 +95,9 @@ export function Watchlist({ details }: { details: DetailsMap }) {
           : daysLeft! > 0
             ? "Out tomorrow · "
             : "Out now · ";
-  const status = everything ? `All ${TITLES.length} watched. You're ready.` : `${when}${watched.size} of ${TITLES.length} watched`;
+  const status = ready
+    ? `${route.label} complete. You're ready.`
+    : `${when}${routeSeen} of ${routeTitles.length} watched · ${route.label}`;
 
   const setTicked = useCallback(
     (id: string, on: boolean) => {
@@ -101,10 +126,10 @@ export function Watchlist({ details }: { details: DetailsMap }) {
     [watched, setTicked, details]
   );
 
-  const share = useCallback(async () => {
+  const share = async () => {
     const url = `${window.location.origin}/`;
-    const text = watched.size
-      ? `I've watched ${watched.size} of ${TITLES.length} on the road to Avengers: Doomsday. Here's the full list in story order:`
+    const text = routeSeen
+      ? `I've watched ${routeSeen} of ${routeTitles.length} on the ${route.label} road to Avengers: Doomsday. Here's the list in story order:`
       : "Every Marvel film and series to watch before Avengers: Doomsday, in story order:";
     if (navigator.share) {
       try {
@@ -118,7 +143,15 @@ export function Watchlist({ details }: { details: DetailsMap }) {
     } catch {
       toast(url);
     }
-  }, [watched.size]);
+  };
+
+  const chooseRoute = (key: RouteKey) => {
+    if (key === prefs.route) return;
+    updatePrefs({ route: key });
+    toast(`${routeOf(key).label}: ${TITLES.filter(routeOf(key).test).length} titles`);
+  };
+
+  const scrollToRoutes = () => document.getElementById("routes")?.scrollIntoView({ behavior: "smooth", block: "center" });
 
   const openTitle = openId ? (byId.get(openId) ?? null) : null;
 
@@ -127,18 +160,26 @@ export function Watchlist({ details }: { details: DetailsMap }) {
       <Hero release={release} audio={audio} onShare={share} />
 
       <div className="relative z-10 mx-auto -mt-4 max-w-5xl px-4 sm:px-6">
-        <ProgressPanel
-          titles={TITLES}
-          watched={watched}
-          essentialsLeft={essentialsLeft}
-          hoursLeft={hoursLeft}
-          pace={pace}
-        />
+        <div id="routes">
+          <RoutePicker route={prefs.route} titles={TITLES} watched={watched} details={details} onRoute={chooseRoute} />
+        </div>
+        <div className="mt-10">
+          <ProgressPanel
+            titles={routeTitles}
+            watched={watched}
+            routeLabel={route.label}
+            markEssentials={route.key !== "essentials"}
+            titlesLeft={routeLeft.length}
+            hoursLeft={hoursLeft}
+            pace={pace}
+          />
+        </div>
         <UpNext
           next={next}
-          total={TITLES.length}
+          position={next ? routeTitles.indexOf(next) + 1 : 0}
+          total={routeTitles.length}
           details={details}
-          wholeList={prefs.filter === "all"}
+          wholeList={prefs.kind === "all"}
           releaseDay={release?.dayMonth ?? null}
           onTick={toggle}
           onOpen={setOpenId}
@@ -146,21 +187,23 @@ export function Watchlist({ details }: { details: DetailsMap }) {
       </div>
 
       <Toolbar
-        filter={prefs.filter}
+        route={route}
+        kind={prefs.kind}
         counts={counts}
         view={prefs.view}
         hide={prefs.hide}
         seen={inView.filter((t) => watched.has(t.id)).length}
         shown={inView.length}
-        onFilter={(filter) => updatePrefs({ filter })}
+        onKind={(k) => updatePrefs({ kind: k })}
         onView={(view) => updatePrefs({ view })}
         onHide={(hide) => updatePrefs({ hide })}
         onSearch={() => setSearching(true)}
+        onChangeRoute={scrollToRoutes}
       />
 
       <main className="mx-auto max-w-5xl px-4 sm:px-6">
         {SECTIONS.map((section, index) => {
-          const matching = TITLES.filter((t) => t.sectionId === section.id && test(t));
+          const matching = inView.filter((t) => t.sectionId === section.id);
           if (!matching.length) return null;
           const visible = prefs.hide ? matching.filter((t) => !watched.has(t.id)) : matching;
           return (
@@ -179,13 +222,19 @@ export function Watchlist({ details }: { details: DetailsMap }) {
           );
         })}
 
-        <Finale backdrop={details[FINALE.id]?.backdrop} release={release} status={status} ready={everything} />
-        <SiteFooter canReset={watched.size > 0} onReset={() => { setWatchedList([]); toast("List reset"); }} />
+        <Finale backdrop={details[FINALE.id]?.backdrop} release={release} status={status} ready={ready} />
+        <SiteFooter
+          canReset={watched.size > 0}
+          onReset={() => {
+            setWatchedList([]);
+            toast("List reset");
+          }}
+        />
       </main>
 
       <TitleDetails
         title={openTitle}
-        titles={TITLES}
+        titles={inView.length ? inView : TITLES}
         details={details}
         watched={watched}
         onToggle={toggle}

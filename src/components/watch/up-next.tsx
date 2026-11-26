@@ -11,6 +11,7 @@ import { BackdropImage, PosterImage } from "./tmdb-image";
 
 interface Props {
   next: StoryTitle | null;
+  position: number;
   total: number;
   details: DetailsMap;
   wholeList: boolean;
@@ -25,7 +26,7 @@ export const primaryButton =
 export const ghostButton =
   "h-11 rounded-full border-silver/25 bg-black/35 px-5 font-mono text-[11px] font-medium tracking-[0.2em] text-silver uppercase backdrop-blur-md transition-[border-color,background,color] duration-500 hover:border-silver/55 hover:bg-black/55 hover:text-soft";
 
-export function UpNext({ next, total, details, wholeList, releaseDay, onTick, onOpen }: Props) {
+export function UpNext({ next, position, total, details, wholeList, releaseDay, onTick, onOpen }: Props) {
   const d = next ? details[next.id] : undefined;
 
   return (
@@ -70,7 +71,7 @@ export function UpNext({ next, total, details, wholeList, releaseDay, onTick, on
                 Up next
                 <span className="h-px w-8 bg-crimson" />
                 <span className="text-silver/80 [text-shadow:0_1px_8px_rgb(0_0_0/0.9)]">
-                  No. {pad(next.number)} / {total}
+                  Stop {pad(position)} / {pad(total)}
                 </span>
               </p>
               <h2 className="poster-type mt-3 text-[clamp(40px,8vw,92px)] leading-[0.88]">

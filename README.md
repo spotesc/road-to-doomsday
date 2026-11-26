@@ -4,8 +4,8 @@ Every Marvel film and series in story order before *Avengers: Doomsday*, with ti
 
 Live at https://doomsdaycountdown.vercel.app (the old spotesc-doomsday.vercel.app address forwards there and brings ticks with it)
 
-- Story order follows Disney+'s timeline, with an Essential / Recommended / Optional tier and a "why watch it" line for every title.
-- "Disney+ pick" marks the titles on Disney+'s official Doomsday watchlist.
+- Story order, with an Essential / Recommended / Optional tier and a "why watch it" line for every title.
+- Three routes: Essentials, The Core Story (essentials plus recommended) and Everything. Progress, up next and the list all follow the route you pick.
 - Posters, backdrops, runtimes, ratings and trailers come from TMDB.
 - The countdown uses the release date for the viewer's own country (16 December in the UK, 18 December in the US) and their own time zone.
 - Ticks are saved in your own browser, so everyone you share it with keeps their own progress.
@@ -43,4 +43,4 @@ TMDB ids look like `movie:1726` or `tv:84958:2` (show id, then season). Push to 
 
 ---
 
-This product uses the TMDB API but is not endorsed or certified by TMDB. An unofficial fan list, not connected to Marvel Studios or Disney. Marvel, the Avengers logo and the Doomsday poster belong to Marvel.
+This product uses the TMDB API but is not endorsed or certified by TMDB. An unofficial fan project, not affiliated with or endorsed by Marvel Studios. Marvel, the Avengers logo and the Doomsday poster belong to Marvel.

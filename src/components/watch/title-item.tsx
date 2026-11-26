@@ -8,7 +8,7 @@ import type { StoryTitle } from "@/data/titles";
 import { KINDS, fullName, lengthText, nameOf, pad } from "@/lib/format";
 import type { TitleDetails } from "@/lib/tmdb";
 import { cn } from "@/lib/utils";
-import { PickBadge, TierBadge } from "./badges";
+import { TierBadge } from "./badges";
 import { BackdropImage, PosterImage } from "./tmdb-image";
 
 interface Props {
@@ -122,7 +122,6 @@ export const TitleRow = forwardRef<HTMLLIElement, Props>(function TitleRow(
           <p className="mt-1 line-clamp-2 text-[13px] leading-snug text-muted-foreground sm:line-clamp-1">{title.why}</p>
           <div className="mt-2.5 flex flex-wrap gap-1.5">
             <TierBadge title={title} />
-            {title.pick && <PickBadge />}
           </div>
         </div>
 
