@@ -87,6 +87,7 @@ export function SiteFooter({ canReset, onReset }: { canReset: boolean; onReset: 
           Story order follows Disney+’s timeline. “Disney+ pick” marks the titles on Disney+’s official Doomsday
           watchlist.
         </p>
+        <p className="text-[10.5px] text-faint/80">This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
       </div>
 
       <p className="mt-10 font-mono text-[9px] tracking-[0.34em] text-faint uppercase">© 2026 Spotesc</p>
